@@ -1,17 +1,17 @@
-# BỘ QUY TẮC KIỂM TOÁN VÀ TÁI THIẾT KẾ TRẢI NGHIỆM NGƯỜI DÙNG (UX AUDIT & REDESIGN PLAYBOOK)
+# UX Audit & Redesign Playbook (Bộ quy tắc kiểm toán và cải tiến trải nghiệm người dùng)
 
-Tài liệu này là kim chỉ nam bắt buộc khi Agent được triệu hồi để kiểm tra, đánh giá (audit), chẩn đoán lỗi trải nghiệm hoặc tái thiết kế (redesign) một luồng/hệ thống đã tồn tại (Brownfield System).
+Tài liệu này là kim chỉ nam bắt buộc khi Agent được triệu hồi trong Existing-Flow Audit Mode để kiểm tra, đánh giá (audit), chẩn đoán lỗi trải nghiệm hoặc cải tiến một user flow / task flow đã tồn tại.
 
 ---
 
-## 1. PHƯƠNG PHÁP LUẬN ĐÁNH GIÁ (AUDIT METHODOLOGY)
+## 1. Audit Methodology (Phương pháp luận đánh giá)
 
-Khi tiếp cận một hệ thống hiện hữu (qua code, sơ đồ, ảnh chụp giao diện, tài liệu đặc tả, hoặc mô tả luồng), Agent phải thực hiện đồng thời 2 kỹ thuật kiểm toán tiêu chuẩn quốc tế:
+Khi tiếp cận một luồng hiện hữu (qua giao diện, tài liệu đặc tả, kịch bản hoặc mô tả luồng), Agent thực hiện đồng thời 2 kỹ thuật kiểm toán tiêu chuẩn:
 
 1. **Heuristic Evaluation (Đánh giá theo 10 Heuristics của Nielsen & 7 Nguyên tắc ISO 9241-110):**
    * Soi chiếu từng bước tương tác để tìm các vi phạm về tính nhất quán, phản hồi trạng thái, phòng chống lỗi và quyền kiểm soát của người dùng.
-2. **Cognitive Walkthrough (Mô phỏng tư duy từng bước của con người):**
-   Tại mỗi bước tương tác của người dùng, tự đặt 4 câu hỏi định mệnh:
+2. **Cognitive Walkthrough (Kiểm chứng nhận thức từng bước):**
+   Tại mỗi bước tương tác của người dùng, tự đặt Cognitive Walkthrough Questions (4 câu hỏi kiểm chứng từng bước):
    * *Q1:* Người dùng có biết chính xác mình cần làm gì để tiến tới mục tiêu không?
    * *Q2:* Người dùng có nhìn thấy thao tác/nút bấm đúng trên giao diện/bối cảnh không?
    * *Q3:* Người dùng có hiểu thao tác đó tương ứng với mục tiêu của họ không?
@@ -19,7 +19,7 @@ Khi tiếp cận một hệ thống hiện hữu (qua code, sơ đồ, ảnh ch�
 
 ---
 
-## 2. CHỈ SỐ MỨC ĐỘ NGHIÊM TRỌNG (SEVERITY INDEX)
+## 2. Severity Rating (Đánh giá mức độ nghiêm trọng: Critical / Major / Minor)
 
 Mọi vấn đề phát hiện đều phải được dán nhãn mức độ nghiêm trọng:
 
@@ -35,12 +35,12 @@ Mọi vấn đề phát hiện đều phải được dán nhãn mức độ ngh
 
 ---
 
-## 3. KHUNG BÁO CÁO PHÁT HIỆN & GIẢI PHÁP (MANDATORY AUDIT FINDING SCHEMA)
+## 3. Mandatory Audit Finding Schema (Khung báo cáo phát hiện & giải pháp)
 
 Khi báo cáo một vấn đề UX, Agent **bắt buộc** phải tuân theo cấu trúc 5 thành phần sau:
 
 ```
-[Mức độ nghiêm trọng: 🔴 CRITICAL | 🟡 MAJOR | 🟢 MINOR] - Tên vấn đề ngắn gọn
+[Severity Rating: 🔴 CRITICAL | 🟡 MAJOR | 🟢 MINOR] - Tên vấn đề ngắn gọn
 • Vị trí / Điểm chạm: [Màn hình, Bước nào trong luồng, hoặc Thành phần tương tác cụ thể]
 • Triệu chứng vi phạm: [Mô tả chính xác khó khăn/ma sát mà người dùng gặp phải]
 • Nguyên tắc đối chiếu: [Trích dẫn vi phạm: Nielsen Heuristics / ISO 9241-110 / WCAG 2.2]
@@ -50,23 +50,23 @@ Khi báo cáo một vấn đề UX, Agent **bắt buộc** phải tuân theo c�
 
 ---
 
-## 4. CHECKLIST PHÁT HIỆN "CÁC LỖI THIẾT KẾ KHÔNG GIỐNG CON NGƯỜI" (ANTI-BIAS AUDIT)
+## 4. Cognitive Bias Checklist (8 thiên kiến nhận thức cần loại trừ)
 
-Khi audit, Agent phải đặc biệt quét tìm các "mùi hôi UX" (UX Smells) bắt nguồn từ tư duy máy móc của lập trình viên/nhà thiết kế (đối chiếu chi tiết với tài liệu `references/cognitive-biases.md`):
+Khi audit, Agent đối chiếu Cognitive Bias Checklist (8 thiên kiến nhận thức cần loại trừ) từ `references/cognitive-biases.md`:
 
 - [ ] **Lỗi "Bắt ép dùng Não số 2" (System 2 Overload - Kahneman):** Bắt người dùng phải tính toán nhẩm, quy đổi đơn vị, hoặc so sánh quá nhiều thông số phức tạp thay vì hệ thống tự tính và gợi ý trực giác.
 - [ ] **Lỗi "Vượt ngưỡng Bộ nhớ làm việc 4-Chunks" (Working Memory Overflow - Cowan):** Bắt người dùng phải nhớ thông tin từ màn hình trước để điền vào màn hình sau.
 - [ ] **Lỗi "Rò rỉ Cấu trúc Database lên Giao diện" (Database Leakage / Leaky Abstractions):** Bắt người dùng nhập liệu theo đúng thứ tự khóa ngoại bảng cơ sở dữ liệu thay vì theo trình tự công việc thực tế của họ ngoài đời.
-- [ ] **Lỗi "Người dùng Hoàn hảo" (Ideal User Fallacy):** Hệ thống giả định người dùng sẽ đọc toàn bộ đoạn hướng dẫn dài 5 dòng trước khi bấm nút.
+- [ ] **Rational Agent Fallacy (Ngụy biện người dùng duy lý):** Hệ thống giả định người dùng sẽ đọc toàn bộ đoạn hướng dẫn dài 5 dòng trước khi bấm nút.
 - [ ] **Lỗi "Mất dữ liệu khi Back / Reload" (State Wipeout):** Người dùng nhập form 10 trường, ấn nhầm back hoặc bị đứt mạng và toàn bộ dữ liệu bị xóa sạch.
 - [ ] **Lỗi "Thông báo lỗi mù mờ" (Cryptic Error - Curse of Knowledge):** Báo lỗi kiểu `Error 500: Invalid transaction state` thay vì chỉ rõ trường nào sai và hướng dẫn cách sửa cụ thể.
-- [ ] **Lỗi "Bẫy xác nhận mù quáng" (Alert Fatigue / Confirmation Habituation):** Bật popup cảnh báo "Bạn có chắc chắn không?" cho mọi thao tác vặt vãnh, khiến người dùng hình thành phản xạ bấm "OK" mà không thèm đọc, đến khi có thao tác phá hủy thật thì lại bấm nhầm.
+- [ ] **Alert Fatigue (Kiệt quệ cảnh báo / Confirmation Habituation):** Bật popup cảnh báo "Bạn có chắc chắn không?" cho mọi thao tác vặt vãnh, khiến người dùng hình thành phản xạ bấm "OK" mà không thèm đọc, đến khi có thao tác phá hủy thật thì lại bấm nhầm.
 
 ---
 
-## 5. BẢNG TỔNG KẾT IMPACT SAU TÁI THIẾT KẾ
+## 5. Impact Scorecard (Bảng tổng kết tác động sau cải tiến)
 
-Kết thúc phần Audit & Redesign, Agent phải tổng kết bức tranh so sánh Trước vs. Sau cải tiến ngay trong phản hồi Markdown:
+Kết thúc Existing-Flow Audit Mode, Agent phải tổng kết bức tranh so sánh Trước vs. Sau cải tiến ngay trong phản hồi Markdown:
 
 | Chỉ số đo lường (Metric) | Hệ thống hiện tại (As-Is) | Sau khi Tái thiết kế (To-Be) | Tác động dự kiến (Impact) |
 |---|---|---|---|
@@ -74,4 +74,3 @@ Kết thúc phần Audit & Redesign, Agent phải tổng kết bức tranh so s�
 | **Tải nhận thức (Cognitive Load)** | Cao (Cần nhớ x điều kiện) | Thấp (Tự động hóa / Gợi ý ngữ cảnh) | Tránh sai sót nhầm lẫn |
 | **Khả năng phục hồi lỗi (Error Recovery)** | Bế tắc / Phải làm lại từ đầu | 1-Click Undo / Lưu nháp tự động | Triệt tiêu 100% ức chế mất dữ liệu |
 | **Thời gian chạm giá trị (Time-to-Value)** | ~x phút | ~y giây/phút | Rút ngắn đáng kể |
-

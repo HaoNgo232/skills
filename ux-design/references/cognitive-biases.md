@@ -15,13 +15,13 @@
 1. [LỜI MỞ ĐẦU & TỔNG QUAN BẢN THỂ LUẬN (ONTOLOGICAL PROLOGUE)](#1-lời-mở-đầu--tổng-quan-bản-thể-luận)
 2. [CƠ SỞ SINH HỌC THẦN KINH & TIẾN HÓA CỦA NÃO BỘ CON NGƯỜI](#2-cơ-sở-sinh-học-thần-kinh--tiến-hóa-của-não-bộ-con-người)
 3. [CHỦ ĐỀ 1: LỜI NGUYỀN TRI THỨC & HIỆU ỨNG ĐỒNG THUẬN GIẢ](#3-chủ-đề-1-lời-nguyền-tri-thức--hiệu-ứng-đồng-thuận-giả)
-4. [CHỦ ĐỀ 2: NGỤY BIỆN "NGƯỜI DÙNG DUY LÝ HOÀN HẢO" (RATIONAL AGENT FALLACY)](#4-chủ-đề-2-ngụy-biện-người-dùng-duy-lý-hoàn-hảo-rational-agent-fallacy)
+4. [Topic 2: Rational Agent Fallacy (Ngụy biện người dùng duy lý)](#4-topic-2-rational-agent-fallacy-ngụy-biện-người-dùng-duy-lý)
 5. [CHỦ ĐỀ 3: LOGIC HƯỚNG MÁY MÓC VS. MÔ HÌNH NHẬN THỨC CON NGƯỜI](#5-chủ-đề-3-logic-hướng-máy-móc-vs-mô-hình-nhận-thức-con-người)
 6. [CHỦ ĐỀ 4: HAI KHOẢNG CÁCH TƯƠNG TÁC (GULF OF EXECUTION & EVALUATION)](#6-chủ-đề-4-hai-khoảng-cách-tương-tác-gulf-of-execution--evaluation)
 7. [CHỦ ĐỀ 5: CUỘC CHIẾN HỆ THỐNG 1 VS. HỆ THỐNG 2 TRONG NHẬN THỨC SỐ](#7-chủ-đề-5-cuộc-chiến-hệ-thống-1-vs-hệ-thống-2-trong-nhận-thức-số)
 8. [CHỦ ĐỀ 6: MA SÁT NHẬN THỨC (COGNITIVE FRICTION) & NGHỊCH LÝ LỰA CHỌN](#8-chủ-đề-6-ma-sát-nhận-thức-cognitive-friction--nghịch-lý-lựa-chọn)
-9. [CHỦ ĐỀ 7: THIÊN KIẾN TỰ ĐỘNG HÓA & HỘI CHỨNG KIỆT QUỆ CẢNH BÁO](#9-chủ-đề-7-thiên-kiến-tự-động-hóa--hội-chứng-kiệt-quệ-cảnh-báo)
-10. [CHỦ ĐỀ 8: VỰC THẲM KỲ DỊ TRONG TƯƠNG TÁC & THIÊN KIẾN THAO TÚNG ĐEN TỐI](#10-chủ-đề-8-vực-thẳm-kỳ-dị-trong-tương-tác--thiên-kiến-thao-túng-đen-tối)
+9. [Topic 7: Automation Bias & Alert Fatigue (Thiên kiến tự động hóa & Kiệt quệ cảnh báo)](#9-topic-7-automation-bias--alert-fatigue-thiên-kiến-tự-động-hóa--kiệt-quệ-cảnh-báo)
+10. [Topic 8: Uncanny Valley in Interaction (Vực thẳm kỳ dị) & Thiên kiến thao túng](#10-topic-8-uncanny-valley-in-interaction-vực-thẳm-kỳ-dị--thiên-kiến-thao-túng)
 11. [BẢNG ĐỐI CHIẾU TOÀN DIỆN: THIÊN KIẾN KỸ SƯ VS. NGUYÊN TẮC HCD ĐỐI TỰNG](#11-bảng-đối-chiếu-toàn-diện-thiên-kiến-kỹ-sư-vs-nguyên-tắc-hcd-đối-tượng)
 12. [KHUNG PHƯƠNG PHÁP KHẮC PHỤC (DE-BIASING & COGNITIVE ERGONOMICS FRAMEWORK)](#12-khung-phương-pháp-khắc-phục-de-biasing--cognitive-ergonomics-framework)
 13. [TÀI LIỆU THAM KHẢO SƠ CẤP (PRIMARY BIBLIOGRAPHY)](#13-tài-liệu-tham-khảo-sơ-cấp-primary-bibliography)
@@ -79,7 +79,7 @@ Trong tác phẩm kinh điển *About Face: The Essentials of Interaction Design
 flowchart LR
     IM["1. IMPLEMENTATION MODEL
 (Mô hình Thực thi)
-Cơ chế code, Database, API, State Machine thực tế"]
+Cơ chế code, Database, API, flow states and transitions thực tế"]
     RM["2. REPRESENTED MODEL
 (Mô hình Đại diện)
 Cách phần mềm thể hiện ra trên màn hình UI"]
@@ -125,7 +125,7 @@ Khi mắc phải Lời nguyền Tri thức và Hiệu ứng Đồng thuận Gi�
 
 ---
 
-## 4. CHỦ ĐỀ 2: NGỤY BIỆN "NGƯỜI DÙNG DUY LÝ HOÀN HẢO" (RATIONAL AGENT FALLACY)
+## 4. Topic 2: Rational Agent Fallacy (Ngụy biện người dùng duy lý)
 
 ### 4.1. Nền tảng khoa học sơ cấp
 * **Bounded Rationality (Tính duy lý giới hạn) & Satisficing:** Nhà kinh tế học đạt giải Nobel Herbert A. Simon (1955, 1957) đã đập tan huyền thoại về "Homo Economicus" (Con người kinh tế duy lý tuyệt đối) bằng khái niệm Bounded Rationality. Con người bị giới hạn bởi:
@@ -355,7 +355,7 @@ $$T = b \cdot \log_2(n + 1)$$
 
 ---
 
-## 9. CHỦ ĐỀ 7: THIÊN KIẾN TỰ ĐỘNG HÓA & HỘI CHỨNG KIỆT QUỆ CẢNH BÁO
+## 9. Topic 7: Automation Bias & Alert Fatigue (Thiên kiến tự động hóa & Kiệt quệ cảnh báo)
 
 ### 9.1. Automation Bias (Thiên kiến Tự động hóa)
 * **Nền tảng sơ cấp:** Raja Parasuraman, Thomas B. Sheridan, Christopher D. Wickens (2000) - *"A model for types and levels of human interaction with automation"*; Kathleen L. Mosier và Linda J. Skitka (1996, 1999).
@@ -397,13 +397,13 @@ Tần suất Cảnh báo
 
 ---
 
-## 10. CHỦ ĐỀ 8: VỰC THẲM KỲ DỊ TRONG TƯƠNG TÁC & THIÊN KIẾN THAO TÚNG ĐEN TỐI
+## 10. Topic 8: Uncanny Valley in Interaction (Vực thẳm kỳ dị) & Thiên kiến thao túng
 
-### 10.1. Uncanny Valley of Interaction (Vực thẳm Kỳ dị trong Tương tác)
+### 10.1. Uncanny Valley in Interaction (Vực thẳm kỳ dị)
 * **Nguồn gốc:** Giáo sư robot học Masahiro Mori (1970) đưa ra khái niệm *Bukimi no Tani Genshō* (The Uncanny Valley): Khi một thực thể nhân tạo càng giống con người về mặt ngoại hình, mức độ thiện cảm tăng lên; nhưng khi nó giống gần như hoàn hảo mà vẫn còn những nét cử động đơ cứng, giả tạo, mức độ thiện cảm rơi tự do xuống vực thẳm của sự ghê sợ và kinh tởm (*revulsion*).
 * **Mở rộng sang Tương tác Phần mềm và AI (Conversational UX):**
   * Nhiều nhà phát triển cố gắng nhồi nhét sự nhân cách hóa gượng ép vào chatbot và trợ lý ảo: bắt bot xưng "em", giả vờ hiển thị hiệu ứng "đang gõ phím..." trong 3 giây để trông giống người thật, thêm các câu đùa cợt vô duyên.
-  * Khi người dùng đang gặp sự cố nghiêm trọng (ví dụ: bị khóa tài khoản ngân hàng lúc nửa đêm) và phải đối diện với một con bot giả vờ vui tươi, thiếu khả năng thấu cảm thực sự nhưng lại từ chối kết nối với nhân viên trực tổng đài, người dùng rơi thẳng vào **Vực thẳm Kỳ dị của Tương tác**. Họ cảm thấy bị xúc phạm, bị chế giễu và mất niềm tin hoàn toàn vào thương hiệu.
+  * Khi người dùng đang gặp sự cố nghiêm trọng (ví dụ: bị khóa tài khoản ngân hàng lúc nửa đêm) và phải đối diện với một con bot giả vờ vui tươi, thiếu khả năng thấu cảm thực sự nhưng lại từ chối kết nối với nhân viên trực tổng đài, người dùng rơi thẳng vào **Uncanny Valley in Interaction (Vực thẳm kỳ dị)**. Họ cảm thấy bị xúc phạm, bị chế giễu và mất niềm tin hoàn toàn vào thương hiệu.
 
 ### 10.2. Dark Patterns & Sự Thao túng Thiên kiến Nhận thức (Deceptive Biases)
 Nếu các lỗi tư duy trên là do sự vô tình của kỹ sư, thì **Dark Patterns (Các mẫu thiết kế lừa đảo / Deceptive Patterns)** — thuật ngữ được đặt ra bởi Harry Brignull (2010) — là sự vũ khí hóa có chủ đích các thiên kiến tâm lý học nhận thức nhằm trục lợi từ người dùng:
@@ -458,8 +458,8 @@ Nếu các lỗi tư duy trên là do sự vô tình của kỹ sư, thì **Dark
 
 Để triệt tiêu các thiên kiến máy móc khỏi tư duy kỹ thuật, đội ngũ phát triển cần thiết lập một khung quy trình kỷ luật nhận thức nghiêm ngặt:
 
-### 12.1. Quy trình Cognitive Walkthrough 4 câu hỏi (Wharton et al., 1994)
-Trước khi phát hành bất kỳ một màn hình tương tác nào, kỹ sư và designer phải cùng nhau trả lời 4 câu hỏi định chuẩn nhận thức tại từng bước thao tác:
+### 12.1. Cognitive Walkthrough Questions (4 câu hỏi kiểm chứng từng bước — Wharton et al., 1994)
+Trước khi hoàn thiện bất kỳ một bước tương tác nào, cần đối chiếu Cognitive Walkthrough Questions (4 câu hỏi kiểm chứng từng bước):
 1. **User có cố gắng đạt được hiệu quả tương ứng với hành động này không?** *(Ý định của user có trùng với bước này không?)*
 2. **User có thấy được công cụ/nút bấm để thực hiện hành động này không?** *(Signifier có hiển thị rõ không, hay bị giấu trong menu con?)*
 3. **User có liên kết được công cụ/nút bấm đó với kết quả mong muốn không?** *(Nhãn chữ có dễ hiểu không, hay dùng thuật ngữ backend?)*

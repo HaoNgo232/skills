@@ -1,10 +1,10 @@
-# NGUỒN TÀI LIỆU, SÁCH KINH ĐIỂN VÀ TIÊU CHUẨN QUỐC TẾ VỀ UX WORKFLOW & INTERACTION DESIGN
+# UX & Interaction Flow Literature (Nguồn tài liệu, sách kinh điển và tiêu chuẩn quốc tế)
 
-Tài liệu này tổng hợp các công trình nghiên cứu sơ cấp (Primary Sources) và các đầu sách gối đầu giường của các chuyên gia hàng đầu thế giới về thiết kế tương tác, tâm lý học nhận thức, và quy trình trải nghiệm người dùng (UX Workflow).
+Tài liệu này tổng hợp các công trình nghiên cứu sơ cấp (Primary Sources) và các đầu sách gối đầu giường của các chuyên gia hàng đầu thế giới về thiết kế tương tác, tâm lý học nhận thức, và luồng tác vụ người dùng (user flow / task flow).
 
 ---
 
-## 1. TIÊU CHUẨN QUỐC TẾ (INTERNATIONAL STANDARDS - TIER 1)
+## 1. International Standards (Tiêu chuẩn quốc tế — Tier 1)
 
 * **ISO 9241-210:2019** – *Ergonomics of human-system interaction — Part 210: Human-centred design for interactive systems*.
   * Tiêu chuẩn nền tảng xác định 4 hoạt động bắt buộc trong chu trình HCD: (1) Hiểu bối cảnh sử dụng, (2) Đặc tả yêu cầu người dùng, (3) Sản sinh giải pháp thiết kế tương tác/workflow, (4) Đánh giá thực nghiệm.
@@ -17,7 +17,7 @@ Tài liệu này tổng hợp các công trình nghiên cứu sơ cấp (Primary
 
 ---
 
-## 2. SÁCH KINH ĐIỂN CHO HỆ THỐNG ĐƠN GIẢN, PHỔ THÔNG & B2C (TIER 1 COMPLEXITY)
+## 2. Foundational Literature for Simple & B2C Systems (Sách kinh điển cho hệ thống đơn giản, phổ thông — Tier 1)
 
 * **Giles Colborne (2010)** – *Simple and Usable Web, Mobile, and Interaction Design* (New Riders).
   * 4 chiến lược đơn giản hóa tối thượng: **Remove** (Loại bỏ triệt để các chi tiết thừa thãi), **Organize** (Sắp xếp thành các nhóm nhận thức hợp lý), **Hide** (Ẩn các tính năng chuyên sâu dưới dạng Progressive Disclosure), **Displace** (Dịch chuyển tải xử lý sang thiết bị hoặc thời điểm khác).
@@ -30,7 +30,7 @@ Tài liệu này tổng hợp các công trình nghiên cứu sơ cấp (Primary
 
 ---
 
-## 3. SÁCH KINH ĐIỂN CHO HỆ THỐNG DOANH NGHIỆP, DỮ LIỆU DÀY & B2B (TIER 2 COMPLEXITY)
+## 3. Foundational Literature for Enterprise & Data-Dense Systems (Sách kinh điển cho hệ thống doanh nghiệp, dữ liệu dày — Tier 2)
 
 * **Alan Cooper, Robert Reimann, David Cronin, Christopher Noessel (2014)** – *About Face: The Essentials of Interaction Design* (Wiley, 4th Ed).
   * Phương pháp thiết kế định hướng mục tiêu (Goal-Directed Design), Phân tích Persona, Khái niệm "Tư thế phần mềm" (Application Posture: Sovereign vs. Transient), và cơ chế phòng chống "Cognitive Friction".
@@ -41,7 +41,7 @@ Tài liệu này tổng hợp các công trình nghiên cứu sơ cấp (Primary
 
 ---
 
-## 4. SÁCH KINH ĐIỂN CHO HỆ THỐNG PHỨC TẠP, PHI CHUẨN & NGUY CẤP (TIER 3 COMPLEXITY)
+## 4. Foundational Literature for Complex & Mission-Critical Systems (Sách kinh điển cho hệ thống phức tạp, nguy cấp — Tier 3)
 
 * **Don Norman (2013)** – *The Design of Everyday Things: Revised and Expanded Edition* (Basic Books).
   * Lý thuyết về Khái niệm cốt lõi: Affordance, Signifier, Feedback, Conceptual Model; Hai khoảng cách nhận thức: *Gulf of Execution* (Khoảng cách thực thi) & *Gulf of Evaluation* (Khoảng cách đánh giá); Phân loại lỗi con người: *Slips* (Sơ suất thao tác vô ý) vs. *Mistakes* (Sai lầm nhận thức có chủ đích).
