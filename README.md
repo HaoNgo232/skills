@@ -40,6 +40,15 @@ npx skills add HaoNgo232/my-skills --skill ux-design
 
 ---
 
+### [fact-check](./fact-check/README.md)
+Rigorously verify claims, news, and statements against primary sources with a 9-stage evidence workflow.
+
+```bash
+npx skills add HaoNgo232/my-skills --skill fact-check
+```
+
+---
+
 ## License
 
 MIT License © 2026 [Ngo Gia Hao (HaoNgo232)](https://github.com/HaoNgo232)
