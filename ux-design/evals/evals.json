@@ -3,40 +3,40 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Thiết kế luồng mua hàng thanh toán nhanh (Guest Checkout) cho một website thương mại điện tử phụ kiện thể thao. Khách hàng không muốn tạo tài khoản rườm rà. Hãy tối ưu để tỷ lệ chuyển đổi cao nhất.",
-      "expected_output": "Bản thiết kế luồng hoàn chỉnh định vị trên ma trận 3 trục, đầy đủ 7 yếu tố cấu thành luồng, xử lý lỗi mượt mà với tính năng hoàn tác/lưu nháp, kèm sơ đồ trạng thái và đánh giá tác động đo lường được.",
+      "prompt": "Thiết kế luồng mua hàng thanh toán nhanh (Guest Checkout) cho một website thương mại điện tử phụ kiện thể thao. Khách hàng không muốn tạo tài khoản rườm rà. Hãy tối ưu để tỷ lệ hoàn tất đơn hàng cao nhất.",
+      "expected_output": "Bản thiết kế luồng tinh gọn 3 phần, đi thẳng vào giải pháp với sơ đồ Mermaid, chi tiết thao tác và lối thoát an toàn, kèm số liệu lợi ích đo lường được mà không dùng thuật ngữ hàn lâm hay vẽ ma trận tọa độ.",
       "files": [],
       "expectations": [
-        "Định vị rõ ràng bài toán trên ma trận 3 trục (Casual/Novice, Low-Stakes, Web GUI).",
-        "Trình bày đầy đủ 7 yếu tố của Flow Anatomy (Actor, Trigger, Input, Decision, Feedback, Fallback, Exit).",
-        "Không ép buộc tạo tài khoản trước hoặc rò rỉ cấu trúc DB; hỗ trợ lưu nháp tự động và giảm tải nhận thức theo Nelson Cowan (4 chunks).",
-        "Thiết kế xử lý lỗi vị tha (Forgiving UI), inline validation theo thời gian thực thay vì chặn sau khi bấm nút gửi.",
-        "Đề xuất giải pháp cụ thể kèm bảng hoặc chỉ số tác động (Impact) đo lường được (giảm bước, giảm thời gian hoàn thành, giảm tỷ lệ bỏ rơi giỏ hàng)."
+        "Câu trả lời đi thẳng vào vấn đề, không in ra biểu đồ ma trận 3 trục hay lý thuyết hàn lâm.",
+        "Trình bày đúng cấu trúc 3 phần rõ ràng: 1. Mục tiêu & Sơ đồ Mermaid -> 2. Chi tiết từng bước & Lối thoát an toàn -> 3. Lợi ích đo lường (Impact).",
+        "Có cơ chế xử lý lỗi vị tha và thân thiện (như lưu nháp tự động, gợi ý tự điền địa chỉ, kiểm tra lỗi tại chỗ - inline validation thay vì chặn sau khi bấm nút).",
+        "Có phần Lối thoát an toàn (nút Quay lại/Hủy, không xóa giỏ hàng nếu thoát ra giữa chừng).",
+        "Định lượng được lợi ích cụ thể (giảm số bước, tiết kiệm thời gian thanh toán, giảm tỷ lệ bỏ giỏ hàng)."
       ]
     },
     {
       "id": 2,
-      "prompt": "Thiết kế quy trình xác thực và cấp phát thuốc tiêm tĩnh mạch liều cao tại khoa Hồi sức tích cực (ICU) trên thiết bị cầm tay thông minh của điều dưỡng. Đây là tác vụ sinh tử cần ngăn ngừa tuyệt đối nhầm lẫn thuốc.",
-      "expected_output": "Bản thiết kế luồng tác vụ an toàn cao cho môi trường y tế khẩn cấp, tập trung vào phòng ngừa lỗi vô thức (slips) và nhầm lẫn nhận thức (mistakes), tích hợp xác thực 2 lớp, phản hồi đa giác quan và quy trình xử lý ngoại lệ khẩn cấp.",
+      "prompt": "Thiết kế quy trình xác thực và cấp phát thuốc tiêm tĩnh mạch liều cao tại khoa Hồi sức tích cực (ICU) trên máy tính bảng cầm tay của điều dưỡng. Đây là tác vụ sinh tử cần ngăn ngừa tuyệt đối nhầm lẫn thuốc.",
+      "expected_output": "Bản thiết kế quy trình an toàn cao với ngôn ngữ thực tế, dễ hiểu, sơ đồ trực quan, chốt chặn bảo vệ bệnh nhân và quy trình ghi đè khẩn cấp mà không đem lý thuyết trừu tượng ra giảng giải.",
       "files": [],
       "expectations": [
-        "Định vị chính xác bài toán trên trục High-Stakes + Specialist + Hardware/Mobile handheld.",
-        "Thiết kế phòng ngừa lỗi theo Rasmussen và Reason (chống Alert Fatigue, phân định Slip vs Mistake, áp dụng Forcing Function / Interlock).",
-        "Mô tả rõ ràng trạng thái phản hồi đa giác quan (âm thanh, rung, visual) dưới 100ms.",
-        "Quy trình xử lý ngoại lệ khẩn cấp (Emergency Override) có đường lui an toàn và lưu vết kiểm toán (Audit trail) mà không bao giờ xóa trắng dữ liệu.",
-        "Có chỉ số tác động định lượng về giảm thiểu sai sót y khoa (Near-misses & Adverse Drug Events)."
+        "Đi thẳng vào giải pháp thực tế, không vẽ biểu đồ ma trận hay phân loại trục tọa độ.",
+        "Thiết kế chốt chặn an toàn rõ ràng (quét mã vạch bệnh nhân + thuốc, xác thực liều lượng 2 lớp).",
+        "Mô tả phản hồi tức thời, đa giác quan (đèn/chuông/rung) khi phát hiện thuốc không khớp.",
+        "Có cơ chế xử lý tình huống khẩn cấp (Emergency Override) với lưu vết kiểm toán và không bao giờ làm mất dữ liệu.",
+        "Có chỉ số lợi ích đo lường cụ thể về phòng ngừa sự cố y khoa."
       ]
     },
     {
       "id": 3,
       "prompt": "Hãy audit luồng hủy gói cước của một ứng dụng học ngoại ngữ: Người dùng bấm 'Hủy gói', app hiện 3 màn hình khuyên ở lại, sau đó bắt gọi điện lên tổng đài hoặc điền form 10 câu hỏi lý do mới cho hủy, nút 'Giữ gói' màu xanh nổi bật còn nút 'Tiếp tục hủy' màu xám chìm. Đánh giá luồng này và đề xuất thiết kế lại.",
-      "expected_output": "Bản kiểm toán chi tiết vạch rõ các bẫy tâm lý nhận thức và Dark Patterns, xếp hạng mức độ nghiêm trọng (Severity Rating), và bản thiết kế lại đạo đức kèm bảng so sánh Trước/Sau và tác động đo lường.",
+      "expected_output": "Bản đánh giá đi thẳng vào Bảng đối chiếu Trước (As-Is) vs Sau (To-Be) có nhãn cảnh báo trực quan, đề xuất phương án văn minh và đo lường lợi ích mà không viết văn dài dòng bên trên.",
       "files": [],
       "expectations": [
-        "Chỉ ra chính xác các Dark Patterns (Roach Motel, Confirmshaming, Obstruction/Sludge, Misdirection) và thiên kiến nhận thức bị vi phạm.",
-        "Phân loại lỗi theo Severity Rating rõ ràng (🔴 Critical, 🟡 Major, 🟢 Minor).",
-        "Đề xuất thiết kế lại tôn trọng quyền tự chủ của người dùng (User Autonomy & Cognitive Ease), hỗ trợ tùy chọn tạm dừng (Pause/Downgrade) minh bạch.",
-        "Cung cấp bảng so sánh Trước (As-Is) vs Sau (To-Be) kèm cột Impact dự kiến (giảm churn oán giận, giảm khiếu nại bồi hoàn chargeback, tối ưu tỷ lệ giữ chân lành mạnh)."
+        "Đi thẳng vào Bảng đối chiếu Trước (As-Is) vs Sau (To-Be), không mở đầu bằng văn phân tích lý thuyết dài dòng.",
+        "Sử dụng nhãn mức độ trực quan trong bảng (🔴 Nghiêm trọng, 🟡 Cần sửa, 🟢 Góp ý nhỏ) để chỉ rõ các bẫy tâm lý và rào cản thao tác.",
+        "Đề xuất giải pháp tôn trọng quyền tự chủ của người dùng (tự phục vụ minh bạch, cung cấp tùy chọn tạm dừng hoặc hạ cấp gói thay vì ép buộc).",
+        "Có cột Lợi ích đo lường (Impact) với các chỉ số cụ thể (thời gian thao tác, giảm tranh chấp ngân hàng, giữ chân người dùng lành mạnh)."
       ]
     }
   ]
