@@ -13,6 +13,7 @@ Each skill is maintained as an independent module containing standard YAML front
 | **[orchestrator](./orchestrator/README.md)** | Coordinates multi-agent workflows for complex programming, architecture, and engineering tasks with DAG task decomposition, tiered models, reactive supervision, and quality gates. | `npx skills add HaoNgo232/my-skills --skill orchestrator` |
 | **[logging-codebase-auditor](./logging-codebase-auditor/README.md)** | Audits logging quality, security, observability coverage, duplication, excessive volume, and storage-capacity risks across application codebases. | `npx skills add HaoNgo232/my-skills --skill logging-codebase-auditor` |
 | **[evidence-aware-reasoning](./evidence-aware-reasoning/README.md)** | Analyzes claims, assumptions, user framing, and ambiguous evidence to maintain a clear boundary between verified facts, reported claims, and model inferences. | `npx skills add HaoNgo232/my-skills --skill evidence-aware-reasoning` |
+| **[ux-design](./ux-design/README.md)** | Human-centered workflow design, interaction architecture, and cognitive usability engineering with adaptive 3-axis context matrix, anti-bias guardrails, and unified audit playbook. | `npx skills add HaoNgo232/my-skills --skill ux-design` |
 
 ---
 
@@ -22,6 +23,9 @@ Each skill is maintained as an independent module containing standard YAML front
 You can cherry-pick and install any individual skill directly into your current project:
 
 ```bash
+# Install UX Design & Workflow Engineering
+npx skills add HaoNgo232/my-skills --skill ux-design
+
 # Install Orchestrator
 npx skills add HaoNgo232/my-skills --skill orchestrator
 
@@ -56,13 +60,17 @@ my-skills/
 │   ├── LICENSE                        # MIT License
 │   ├── assets/                        # Diagrams & policy templates
 │   └── references/                    # Reference guidelines
-└── evidence-aware-reasoning/          # Evidence-aware reasoning & verification skill
+├── evidence-aware-reasoning/          # Evidence-aware reasoning & verification skill
+│   ├── SKILL.md                       # Skill specification
+│   ├── README.md                      # Documentation
+│   ├── ear.md                         # Core reasoning rules
+│   ├── LICENSE                        # MIT License
+│   ├── examples/                      # Practical reasoning examples
+│   └── install.sh                     # Standalone install script
+└── ux-design/                         # Human-centered UX workflow & audit skill
     ├── SKILL.md                       # Skill specification
     ├── README.md                      # Documentation
-    ├── ear.md                         # Core reasoning rules
-    ├── LICENSE                        # MIT License
-    ├── examples/                      # Practical reasoning examples
-    └── install.sh                     # Standalone install script
+    └── references/                    # Playbooks, cognitive biases, patterns & literature
 ```
 
 ---
