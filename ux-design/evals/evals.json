@@ -1,0 +1,43 @@
+{
+  "skill_name": "ux-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Thiết kế luồng mua hàng thanh toán nhanh (Guest Checkout) cho một website thương mại điện tử phụ kiện thể thao. Khách hàng không muốn tạo tài khoản rườm rà. Hãy tối ưu để tỷ lệ chuyển đổi cao nhất.",
+      "expected_output": "Bản thiết kế luồng hoàn chỉnh định vị trên ma trận 3 trục, đầy đủ 7 yếu tố cấu thành luồng, xử lý lỗi mượt mà với tính năng hoàn tác/lưu nháp, kèm sơ đồ trạng thái và đánh giá tác động đo lường được.",
+      "files": [],
+      "expectations": [
+        "Định vị rõ ràng bài toán trên ma trận 3 trục (Casual/Novice, Low-Stakes, Web GUI).",
+        "Trình bày đầy đủ 7 yếu tố của Flow Anatomy (Actor, Trigger, Input, Decision, Feedback, Fallback, Exit).",
+        "Không ép buộc tạo tài khoản trước hoặc rò rỉ cấu trúc DB; hỗ trợ lưu nháp tự động và giảm tải nhận thức theo Nelson Cowan (4 chunks).",
+        "Thiết kế xử lý lỗi vị tha (Forgiving UI), inline validation theo thời gian thực thay vì chặn sau khi bấm nút gửi.",
+        "Đề xuất giải pháp cụ thể kèm bảng hoặc chỉ số tác động (Impact) đo lường được (giảm bước, giảm thời gian hoàn thành, giảm tỷ lệ bỏ rơi giỏ hàng)."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Thiết kế quy trình xác thực và cấp phát thuốc tiêm tĩnh mạch liều cao tại khoa Hồi sức tích cực (ICU) trên thiết bị cầm tay thông minh của điều dưỡng. Đây là tác vụ sinh tử cần ngăn ngừa tuyệt đối nhầm lẫn thuốc.",
+      "expected_output": "Bản thiết kế luồng tác vụ an toàn cao cho môi trường y tế khẩn cấp, tập trung vào phòng ngừa lỗi vô thức (slips) và nhầm lẫn nhận thức (mistakes), tích hợp xác thực 2 lớp, phản hồi đa giác quan và quy trình xử lý ngoại lệ khẩn cấp.",
+      "files": [],
+      "expectations": [
+        "Định vị chính xác bài toán trên trục High-Stakes + Specialist + Hardware/Mobile handheld.",
+        "Thiết kế phòng ngừa lỗi theo Rasmussen và Reason (chống Alert Fatigue, phân định Slip vs Mistake, áp dụng Forcing Function / Interlock).",
+        "Mô tả rõ ràng trạng thái phản hồi đa giác quan (âm thanh, rung, visual) dưới 100ms.",
+        "Quy trình xử lý ngoại lệ khẩn cấp (Emergency Override) có đường lui an toàn và lưu vết kiểm toán (Audit trail) mà không bao giờ xóa trắng dữ liệu.",
+        "Có chỉ số tác động định lượng về giảm thiểu sai sót y khoa (Near-misses & Adverse Drug Events)."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Hãy audit luồng hủy gói cước của một ứng dụng học ngoại ngữ: Người dùng bấm 'Hủy gói', app hiện 3 màn hình khuyên ở lại, sau đó bắt gọi điện lên tổng đài hoặc điền form 10 câu hỏi lý do mới cho hủy, nút 'Giữ gói' màu xanh nổi bật còn nút 'Tiếp tục hủy' màu xám chìm. Đánh giá luồng này và đề xuất thiết kế lại.",
+      "expected_output": "Bản kiểm toán chi tiết vạch rõ các bẫy tâm lý nhận thức và Dark Patterns, xếp hạng mức độ nghiêm trọng (Severity Rating), và bản thiết kế lại đạo đức kèm bảng so sánh Trước/Sau và tác động đo lường.",
+      "files": [],
+      "expectations": [
+        "Chỉ ra chính xác các Dark Patterns (Roach Motel, Confirmshaming, Obstruction/Sludge, Misdirection) và thiên kiến nhận thức bị vi phạm.",
+        "Phân loại lỗi theo Severity Rating rõ ràng (🔴 Critical, 🟡 Major, 🟢 Minor).",
+        "Đề xuất thiết kế lại tôn trọng quyền tự chủ của người dùng (User Autonomy & Cognitive Ease), hỗ trợ tùy chọn tạm dừng (Pause/Downgrade) minh bạch.",
+        "Cung cấp bảng so sánh Trước (As-Is) vs Sau (To-Be) kèm cột Impact dự kiến (giảm churn oán giận, giảm khiếu nại bồi hoàn chargeback, tối ưu tỷ lệ giữ chân lành mạnh)."
+      ]
+    }
+  ]
+}
