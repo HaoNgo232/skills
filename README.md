@@ -4,7 +4,7 @@ Collection of modular AI Agent Skills.
 
 ---
 
-### [orchestrator](./orchestrator/README.md)
+### [orchestrator](./orchestrator/SKILL.md)
 Coordinates multi-agent workflows with DAG task decomposition, tiered models, and reactive supervision.
 
 ```bash
@@ -13,7 +13,7 @@ npx skills add HaoNgo232/my-skills --skill orchestrator
 
 ---
 
-### [logging-codebase-auditor](./logging-codebase-auditor/README.md)
+### [logging-codebase-auditor](./logging-codebase-auditor/SKILL.md)
 Audits logging quality, security, observability coverage, duplication, and volume across codebases.
 
 ```bash
@@ -22,7 +22,7 @@ npx skills add HaoNgo232/my-skills --skill logging-codebase-auditor
 
 ---
 
-### [evidence-aware-reasoning](./evidence-aware-reasoning/README.md)
+### [evidence-aware-reasoning](./evidence-aware-reasoning/SKILL.md)
 Separates verified facts, reported claims, and model inferences to avoid hallucinated assumptions.
 
 ```bash
@@ -31,7 +31,7 @@ npx skills add HaoNgo232/my-skills --skill evidence-aware-reasoning
 
 ---
 
-### [ux-design](./ux-design/README.md)
+### [ux-design](./ux-design/SKILL.md)
 Human-centered workflow design, interaction architecture, and cognitive usability audit with adaptive 3-axis context matrix.
 
 ```bash
@@ -40,7 +40,7 @@ npx skills add HaoNgo232/my-skills --skill ux-design
 
 ---
 
-### [fact-check](./fact-check/README.md)
+### [fact-check](./fact-check/SKILL.md)
 Rigorously verify claims, news, and statements against primary sources with a 9-stage evidence workflow.
 
 ```bash
