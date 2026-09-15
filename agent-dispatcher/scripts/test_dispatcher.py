@@ -63,5 +63,29 @@ class TestAgentDispatcher(unittest.TestCase):
         delta = calculate_git_delta(before, after, ".")
         self.assertEqual(delta["newly_modified_files"], ["new_agent_file.txt"])
 
+    def test_opencode_parse_activity(self):
+        adapter = OpenCodeAdapter()
+        log_sample = (
+            '{"type":"step_start","timestamp":100}\n'
+            '{"type":"tool_call","part":{"tool":"read_file","args":{"path":"src/Video.tsx"}}}\n'
+        )
+        activity = adapter.parse_activity(log_sample)
+        self.assertIn("read_file", activity)
+        self.assertIn("src/Video.tsx", activity)
+
+    def test_cline_parse_activity(self):
+        adapter = ClineAdapter()
+        log_sample = (
+            '[thinking] Reading files to analyze codebase\n'
+            '[run_commands] find /home/hao/Desktop/premium-text-to-video -maxdepth 2\n'
+        )
+        activity = adapter.parse_activity(log_sample)
+        self.assertIn("run_commands", activity)
+
+    def test_async_dispatch_options(self):
+        opts = DispatchOptions(async_mode=True)
+        self.assertTrue(opts.async_mode)
+
 if __name__ == "__main__":
     unittest.main()
+

@@ -49,13 +49,27 @@ python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run <external_agent>
   ```bash
   python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run opencode "Tạo helper format tiền tệ" --caller agy --timeout 60
   ```
+- **Offload Asynchronously (Background Job)**:
+  ```bash
+  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run opencode "Review codebase" --caller agy --timeout 600 --async
+  ```
+- **Check Status / Activity of Dispatched Agent**:
+  ```bash
+  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py status <execution_id>
+  ```
+- **Cancel a Running Dispatched Agent**:
+  ```bash
+  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py cancel <execution_id>
+  ```
 
 ### Available Options:
 - `--caller <name>`: *(Required)* Calling agent identity (`agy`, `cline`, `opencode`). Blocks self-dispatch.
-- `--timeout <seconds>`: Max wait time (default: 120).
+- `--timeout <seconds>`: Max execution timeout in seconds (default: 120).
+- `--async`: Launch external agent asynchronously in the background and return immediately.
 - `--model <model_id>`: Target model override.
 - `--worktree`: Run in isolated git worktree (Cline).
 - `--dry-run`: Preview command without running.
+
 
 ---
 

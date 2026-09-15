@@ -11,6 +11,8 @@ class DispatchOptions:
     cwd: Optional[str] = None
     worktree: bool = False
     dry_run: bool = False
+    async_mode: bool = False
+
 
 @dataclass
 class AgentIdentity:
@@ -89,6 +91,13 @@ class BaseAgentAdapter(abc.ABC):
         """Builds CLI execution command list."""
         pass
 
+    def parse_activity(self, log_content: str) -> str:
+        """Extract a short human-readable description of current activity from recent log lines."""
+        lines = [line.strip() for line in log_content.splitlines() if line.strip()]
+        if not lines:
+            return "Idle / Waiting for output"
+        return lines[-1][:120]
+
     def parse_summary_and_error(self, exit_code: int, log_content: str) -> Dict[str, Any]:
         """Default log parser: extracts the last relevant lines or error indicators."""
         lines = [line.strip() for line in log_content.splitlines() if line.strip()]
@@ -103,3 +112,5 @@ class BaseAgentAdapter(abc.ABC):
             "summary": "\n".join(last_lines[-3:]) if last_lines else "No output captured.",
             "error_hint": "\n".join(error_lines[-5:]) if error_lines else None
         }
+
+
