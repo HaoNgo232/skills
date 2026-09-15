@@ -1,51 +1,23 @@
-# My Skills 🛠️
+# Skills
 
-Collection of modular AI Agent Skills.
+Personal storage repository for AI agent skills and automation tools.
 
 ---
+
+### [agent-dispatcher](./agent-dispatcher/SKILL.md)
+Dispatches coding tasks to external AI coding agent CLIs (such as Cline CLI, OpenCode) with identity verification, anti-self-dispatch guards, and context window isolation.
 
 ### [orchestrator](./orchestrator/SKILL.md)
-Coordinates multi-agent workflows with DAG task decomposition, tiered models, and reactive supervision.
-
-```bash
-npx skills add HaoNgo232/my-skills --skill orchestrator
-```
-
----
+Coordinates multi-agent workflows with task decomposition, tiered models, and supervision.
 
 ### [logging-codebase-auditor](./logging-codebase-auditor/SKILL.md)
 Audits logging quality, security, observability coverage, duplication, and volume across codebases.
 
-```bash
-npx skills add HaoNgo232/my-skills --skill logging-codebase-auditor
-```
-
----
-
-### [evidence-aware-reasoning](./evidence-aware-reasoning/SKILL.md)
-Separates verified facts, reported claims, and model inferences to avoid hallucinated assumptions.
-
-```bash
-npx skills add HaoNgo232/my-skills --skill evidence-aware-reasoning
-```
-
----
-
 ### [ux-design](./ux-design/SKILL.md)
-Human-centered workflow design, interaction architecture, and cognitive usability audit with adaptive 3-axis context matrix.
-
-```bash
-npx skills add HaoNgo232/my-skills --skill ux-design
-```
-
----
+Human-centered workflow design, interaction architecture, and usability audit.
 
 ### [fact-check](./fact-check/SKILL.md)
-Rigorously verify claims, news, and statements against primary sources with a 9-stage evidence workflow.
-
-```bash
-npx skills add HaoNgo232/my-skills --skill fact-check
-```
+Verifies claims, news, and statements against primary sources with a structured evidence workflow.
 
 ---
 
