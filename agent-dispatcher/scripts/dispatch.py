@@ -165,8 +165,38 @@ def cmd_list_models(args):
     print(json.dumps({"agent": args.agent, "models": models}, indent=2, ensure_ascii=False))
 
 
+def get_cli_command(subcmd: str, *args: str) -> str:
+    """Return friendly CLI invocation string, preferring 'agent-dispatcher' if in PATH."""
+    import shutil
+    cli = "agent-dispatcher" if shutil.which("agent-dispatcher") else f"python3 {os.path.abspath(__file__)}"
+    args_str = " ".join(args)
+    return f"{cli} {subcmd} {args_str}".strip()
+
+def get_latest_execution_id() -> Optional[str]:
+    """Find the most recently created or modified execution ID in RUN_LOG_DIR."""
+    if not RUN_LOG_DIR.exists():
+        return None
+    runs = []
+    for d in RUN_LOG_DIR.iterdir():
+        if d.is_dir() and (d / "meta.json").exists():
+            try:
+                runs.append((d.stat().st_mtime, d.name))
+            except Exception:
+                pass
+    if not runs:
+        return None
+    runs.sort(key=lambda x: x[0], reverse=True)
+    return runs[0][1]
+
 def cmd_status(args):
-    execution_id = args.execution_id
+    execution_id = args.execution_id or get_latest_execution_id()
+    if not execution_id:
+        res = {
+            "status": "error",
+            "message": "No execution ID provided and no previous executions found in /tmp/agent_runs."
+        }
+        print(json.dumps(res, indent=2, ensure_ascii=False))
+        sys.exit(1)
     task_dir = RUN_LOG_DIR / execution_id
 
     if not task_dir.exists():
@@ -262,7 +292,8 @@ def cmd_status(args):
         if tmux_session:
             res["tmux_session"] = tmux_session
             res["attach_command"] = f"tmux attach -t {tmux_session}"
-            res["reply_command"] = f"python3 {os.path.abspath(__file__)} reply {execution_id} \"<answer>\""
+            res["reply_command"] = get_cli_command("reply", execution_id, '"<answer>"')
+        res["watch_command"] = get_cli_command("watch", execution_id)
         print(json.dumps(res, indent=2, ensure_ascii=False))
     else:
         # Process died or finished without manifest
@@ -301,7 +332,10 @@ def cmd_status(args):
         print(json.dumps(clean_response, indent=2, ensure_ascii=False))
 
 def cmd_cancel(args):
-    execution_id = args.execution_id
+    execution_id = args.execution_id or get_latest_execution_id()
+    if not execution_id:
+        print(json.dumps({"status": "error", "message": "No execution ID provided and no previous executions found."}, indent=2, ensure_ascii=False))
+        sys.exit(1)
     task_dir = RUN_LOG_DIR / execution_id
 
     if not task_dir.exists():
@@ -343,7 +377,10 @@ def cmd_cancel(args):
 
 def cmd_reply(args):
     """Send user/agent reply into the active session."""
-    execution_id = args.execution_id
+    execution_id = args.execution_id or get_latest_execution_id()
+    if not execution_id:
+        print(json.dumps({"status": "error", "message": "No execution ID provided and no previous executions found."}, indent=2, ensure_ascii=False))
+        sys.exit(1)
     message = args.message
     task_dir = RUN_LOG_DIR / execution_id
 
@@ -389,7 +426,10 @@ def cmd_reply(args):
 
 def cmd_watch(args):
     """Live-watch output stream and status of a dispatched agent."""
-    execution_id = args.execution_id
+    execution_id = args.execution_id or get_latest_execution_id()
+    if not execution_id:
+        print(json.dumps({"status": "error", "message": "No execution ID provided and no previous executions found."}, indent=2, ensure_ascii=False))
+        sys.exit(1)
     task_dir = RUN_LOG_DIR / execution_id
 
     if not task_dir.exists():
@@ -586,10 +626,10 @@ def cmd_run(args):
             "tmux_session": tmux_session,
             "pane_pid": pane_pid,
             "user_attach_command": f"tmux attach -t {tmux_session}",
-            "check_status_command": f"python3 {os.path.abspath(__file__)} status {execution_id}",
-            "reply_command": f"python3 {os.path.abspath(__file__)} reply {execution_id} \"<answer>\"",
-            "watch_command": f"python3 {os.path.abspath(__file__)} watch {execution_id}",
-            "cancel_command": f"python3 {os.path.abspath(__file__)} cancel {execution_id}",
+            "check_status_command": get_cli_command("status", execution_id),
+            "reply_command": get_cli_command("reply", execution_id, '"<answer>"'),
+            "watch_command": get_cli_command("watch", execution_id),
+            "cancel_command": get_cli_command("cancel", execution_id),
             "raw_log": str(raw_log_path)
         }
         print(json.dumps(interactive_res, indent=2, ensure_ascii=False))
@@ -633,8 +673,9 @@ def cmd_run(args):
                 "binary": identity.binary_path
             },
             "pid": process.pid,
-            "check_status_command": f"python3 {os.path.abspath(__file__)} status {execution_id}",
-            "cancel_command": f"python3 {os.path.abspath(__file__)} cancel {execution_id}",
+            "check_status_command": get_cli_command("status", execution_id),
+            "watch_command": get_cli_command("watch", execution_id),
+            "cancel_command": get_cli_command("cancel", execution_id),
             "raw_log": str(raw_log_path)
         }
         print(json.dumps(async_res, indent=2, ensure_ascii=False))
@@ -782,20 +823,20 @@ def main():
 
     # status
     status_parser = subparsers.add_parser("status", help="Check status, activity or result of a dispatched execution")
-    status_parser.add_argument("execution_id", help="Execution ID returned from run")
+    status_parser.add_argument("execution_id", nargs="?", default=None, help="Execution ID returned from run (defaults to latest)")
 
     # cancel
     cancel_parser = subparsers.add_parser("cancel", help="Cancel a running execution")
-    cancel_parser.add_argument("execution_id", help="Execution ID to cancel")
+    cancel_parser.add_argument("execution_id", nargs="?", default=None, help="Execution ID to cancel (defaults to latest)")
 
     # reply
     reply_parser = subparsers.add_parser("reply", help="Send input/reply to an active interactive session")
-    reply_parser.add_argument("execution_id", help="Execution ID to reply to")
     reply_parser.add_argument("message", help="Message or option to send to the running agent")
+    reply_parser.add_argument("--id", dest="execution_id", default=None, help="Execution ID to reply to (defaults to latest)")
 
     # watch
     watch_parser = subparsers.add_parser("watch", help="Live watch output stream and progress of an agent session")
-    watch_parser.add_argument("execution_id", help="Execution ID to watch")
+    watch_parser.add_argument("execution_id", nargs="?", default=None, help="Execution ID to watch (defaults to latest)")
 
     # run
     run_parser = subparsers.add_parser("run", help="Dispatch a task to a coding agent")

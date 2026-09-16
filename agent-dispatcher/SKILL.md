@@ -35,52 +35,55 @@ When this skill is invoked:
 
 ## Quick Command Execution
 
-Run through the context-shield wrapper script:
+Run directly via `agent-dispatcher` CLI (globally accessible):
 ```bash
-python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run <external_agent> "<prompt>" --caller <your_identity> [options]
+agent-dispatcher run <external_agent> "<prompt>" --caller <your_identity> [options]
 ```
+*(Fallback if not in PATH: `python3 <skill_dir>/scripts/dispatch.py ...`)*
 
 ### Examples:
 - **Offload to Cline**:
   ```bash
-  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run cline "Viết unit test cho auth module" --caller agy --timeout 120
+  agent-dispatcher run cline "Viết unit test cho auth module" --caller agy --timeout 120
   ```
 - **Offload to OpenCode**:
   ```bash
-  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run opencode "Tạo helper format tiền tệ" --caller agy --timeout 60
+  agent-dispatcher run opencode "Tạo helper format tiền tệ" --caller agy --timeout 60
   ```
 - **Offload Asynchronously (Background Job)**:
   ```bash
-  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run opencode "Review codebase" --caller agy --timeout 600 --async
+  agent-dispatcher run opencode "Review codebase" --caller agy --timeout 600 --async
   ```
 - **Offload Interactively (2-way Interaction & User Attach)**:
   ```bash
-  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run opencode "Tạo tính năng thanh toán" --caller agy --interactive
+  agent-dispatcher run opencode "Tạo tính năng thanh toán" --caller agy --interactive
   ```
 - **Check Status / Activity / Prompt of Dispatched Agent**:
   ```bash
-  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py status <execution_id>
+  agent-dispatcher status [execution_id]
   ```
+  *(Tip: Omit `[execution_id]` to automatically check the latest session)*
 - **Send Reply / Answer to Agent Prompt (2-Way)**:
   ```bash
-  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py reply <execution_id> "y"
+  agent-dispatcher reply "y" [--id <execution_id>]
   ```
 - **Watch Live Progress (Terminal Stream)**:
   ```bash
-  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py watch <execution_id>
+  agent-dispatcher watch [execution_id]
   ```
+  *(Tip: Omit `[execution_id]` to automatically stream the latest session)*
 - **Open Live Interactive TUI (Full Visual Monitor & Intervention)**:
   ```bash
   tmux attach -t <execution_id>
   ```
-  *(Tip: Press `Ctrl+b` then `d` to detach safely without stopping the agent)*
+  *(Only available when launched with `--interactive`. Tip: Press `Ctrl+b` then `d` to detach safely)*
 - **Cancel a Running Dispatched Agent**:
   ```bash
-  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py cancel <execution_id>
+  agent-dispatcher cancel [execution_id]
   ```
 - **List Available Models for Agent**:
   ```bash
-  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py list-models <external_agent>
+  agent-dispatcher list-models <external_agent>
   ```
 
 
