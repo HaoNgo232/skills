@@ -35,55 +35,57 @@ When this skill is invoked:
 
 ## Quick Command Execution
 
-Run directly via `agent-dispatcher` CLI (globally accessible):
+The calling agent runs `dispatch.py` using its own skill directory path:
 ```bash
-agent-dispatcher run <external_agent> "<prompt>" --caller <your_identity> [options]
+python3 <skill_dir>/scripts/dispatch.py run <external_agent> "<prompt>" --caller <your_identity> [options]
 ```
-*(Fallback if not in PATH: `python3 <skill_dir>/scripts/dispatch.py ...`)*
+*(Or simply `agent-dispatcher run ...` if `agent-dispatcher` is already in PATH)*
+
+> **Interactive by Default**: All tasks automatically run in a detached `tmux` session (`disp-<timestamp>-<hash>`) if `tmux` is available on the system. You can attach with `tmux attach -t <id>` at any time!
 
 ### Examples:
 - **Offload to Cline**:
   ```bash
-  agent-dispatcher run cline "Viết unit test cho auth module" --caller agy --timeout 120
+  python3 <skill_dir>/scripts/dispatch.py run cline "Viết unit test cho auth module" --caller agy --timeout 120
   ```
 - **Offload to OpenCode**:
   ```bash
-  agent-dispatcher run opencode "Tạo helper format tiền tệ" --caller agy --timeout 60
+  python3 <skill_dir>/scripts/dispatch.py run opencode "Tạo helper format tiền tệ" --caller agy --timeout 60
   ```
 - **Offload Asynchronously (Background Job)**:
   ```bash
-  agent-dispatcher run opencode "Review codebase" --caller agy --timeout 600 --async
+  python3 <skill_dir>/scripts/dispatch.py run opencode "Review codebase" --caller agy --timeout 600 --async
   ```
-- **Offload Interactively (2-way Interaction & User Attach)**:
+- **Turn off Interactive Tmux Session**:
   ```bash
-  agent-dispatcher run opencode "Tạo tính năng thanh toán" --caller agy --interactive
+  python3 <skill_dir>/scripts/dispatch.py run opencode "Tạo hàm test" --caller agy --no-interactive
   ```
 - **Check Status / Activity / Prompt of Dispatched Agent**:
   ```bash
-  agent-dispatcher status [execution_id]
+  python3 <skill_dir>/scripts/dispatch.py status [execution_id]
   ```
   *(Tip: Omit `[execution_id]` to automatically check the latest session)*
 - **Send Reply / Answer to Agent Prompt (2-Way)**:
   ```bash
-  agent-dispatcher reply "y" [--id <execution_id>]
+  python3 <skill_dir>/scripts/dispatch.py reply "y" [--id <execution_id>]
   ```
 - **Watch Live Progress (Terminal Stream)**:
   ```bash
-  agent-dispatcher watch [execution_id]
+  python3 <skill_dir>/scripts/dispatch.py watch [execution_id]
   ```
   *(Tip: Omit `[execution_id]` to automatically stream the latest session)*
 - **Open Live Interactive TUI (Full Visual Monitor & Intervention)**:
   ```bash
   tmux attach -t <execution_id>
   ```
-  *(Only available when launched with `--interactive`. Tip: Press `Ctrl+b` then `d` to detach safely)*
+  *(Always available by default! Tip: Press `Ctrl+b` then `d` to detach safely without stopping the agent)*
 - **Cancel a Running Dispatched Agent**:
   ```bash
-  agent-dispatcher cancel [execution_id]
+  python3 <skill_dir>/scripts/dispatch.py cancel [execution_id]
   ```
 - **List Available Models for Agent**:
   ```bash
-  agent-dispatcher list-models <external_agent>
+  python3 <skill_dir>/scripts/dispatch.py list-models <external_agent>
   ```
 
 

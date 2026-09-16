@@ -12,7 +12,7 @@ class DispatchOptions:
     worktree: bool = False
     dry_run: bool = False
     async_mode: bool = False
-    interactive: bool = False
+    interactive: bool = True
     idle_timeout: int = 120
     checkin_interval: int = 0
 

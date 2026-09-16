@@ -24,27 +24,39 @@ class TestAgentDispatcher(unittest.TestCase):
 
     def test_command_building_cline(self):
         adapter = ClineAdapter()
-        opts = DispatchOptions(timeout=60, model="test-model", worktree=True)
-        cmd = adapter.build_command("test prompt", opts)
-        self.assertIn("--auto-approve", cmd)
-        self.assertIn("--timeout", cmd)
-        self.assertIn("60", cmd)
-        self.assertIn("-m", cmd)
-        self.assertIn("test-model", cmd)
-        self.assertIn("--worktree", cmd)
-        self.assertEqual(cmd[-1], "test prompt")
+        # Non-interactive mode has --auto-approve
+        opts_non_int = DispatchOptions(timeout=60, model="test-model", worktree=True, interactive=False)
+        cmd_non_int = adapter.build_command("test prompt", opts_non_int)
+        self.assertIn("--auto-approve", cmd_non_int)
+        self.assertIn("--timeout", cmd_non_int)
+        self.assertIn("60", cmd_non_int)
+        self.assertIn("-m", cmd_non_int)
+        self.assertIn("test-model", cmd_non_int)
+        self.assertIn("--worktree", cmd_non_int)
+        self.assertEqual(cmd_non_int[-1], "test prompt")
+
+        # Interactive mode omits --auto-approve
+        opts_int = DispatchOptions(interactive=True)
+        cmd_int = adapter.build_command("test prompt", opts_int)
+        self.assertNotIn("--auto-approve", cmd_int)
 
     def test_command_building_opencode(self):
         adapter = OpenCodeAdapter()
-        opts = DispatchOptions(model="test-model")
-        cmd = adapter.build_command("test prompt", opts)
-        self.assertIn("run", cmd)
-        self.assertIn("--auto", cmd)
-        self.assertIn("--format", cmd)
-        self.assertIn("json", cmd)
-        self.assertIn("-m", cmd)
-        self.assertIn("test-model", cmd)
-        self.assertEqual(cmd[-1], "test prompt")
+        # Non-interactive mode has --auto
+        opts_non_int = DispatchOptions(model="test-model", interactive=False)
+        cmd_non_int = adapter.build_command("test prompt", opts_non_int)
+        self.assertIn("run", cmd_non_int)
+        self.assertIn("--auto", cmd_non_int)
+        self.assertIn("--format", cmd_non_int)
+        self.assertIn("json", cmd_non_int)
+        self.assertIn("-m", cmd_non_int)
+        self.assertIn("test-model", cmd_non_int)
+        self.assertEqual(cmd_non_int[-1], "test prompt")
+
+        # Interactive mode omits --auto
+        opts_int = DispatchOptions(interactive=True)
+        cmd_int = adapter.build_command("test prompt", opts_int)
+        self.assertNotIn("--auto", cmd_int)
 
     def test_command_building_agy(self):
         adapter = AgyAdapter()
@@ -122,6 +134,7 @@ class TestAgentDispatcher(unittest.TestCase):
         opts = DispatchOptions(idle_timeout=60, checkin_interval=30)
         self.assertEqual(opts.idle_timeout, 60)
         self.assertEqual(opts.checkin_interval, 30)
+        self.assertTrue(opts.interactive)
 
 if __name__ == "__main__":
     unittest.main()

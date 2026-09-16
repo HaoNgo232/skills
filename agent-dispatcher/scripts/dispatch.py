@@ -517,8 +517,13 @@ def cmd_run(args):
             "message": f"Agent '{agent_name}' is not installed or not in PATH.",
             "agent_identity": identity.to_dict()
         }
-        print(json.dumps(res, indent=2, ensure_ascii=False))
-        sys.exit(1)
+    # Determine interactive mode: default True if tmux is installed, unless user explicitly disabled it or requested non-interactive async
+    raw_interactive = getattr(args, "interactive", None)
+    async_mode = getattr(args, "async_mode", False)
+    if raw_interactive is None:
+        interactive = has_tmux() and not async_mode
+    else:
+        interactive = raw_interactive
 
     opts = DispatchOptions(
         timeout=args.timeout,
@@ -526,8 +531,8 @@ def cmd_run(args):
         cwd=cwd,
         worktree=args.worktree,
         dry_run=args.dry_run,
-        async_mode=getattr(args, "async_mode", False),
-        interactive=getattr(args, "interactive", False),
+        async_mode=async_mode,
+        interactive=interactive,
         idle_timeout=getattr(args, "idle_timeout", 120),
         checkin_interval=getattr(args, "checkin_interval", 0)
     )
@@ -568,18 +573,8 @@ def cmd_run(args):
     git_before = get_git_status_files(cwd)
     start_time = time.time()
 
-    # If interactive mode requested, launch inside a detached tmux session with unbuffered pipe to raw.log
-    if opts.interactive:
-        if not has_tmux():
-            res = {
-                "status": "error",
-                "error_type": "TmuxNotInstalled",
-                "message": "tmux is not installed or not in PATH. Please install tmux to use interactive mode.",
-                "guidance": "Run 'sudo apt install tmux' (or package manager equivalent) or omit --interactive."
-            }
-            print(json.dumps(res, indent=2, ensure_ascii=False))
-            sys.exit(1)
-
+    # If interactive mode requested and tmux is available, launch inside a detached tmux session with unbuffered pipe to raw.log
+    if opts.interactive and has_tmux():
         tmux_session = execution_id
         # Build command that pipes output to raw_log_path in real-time
         # Use shlex.join to construct safe shell execution inside tmux
@@ -848,8 +843,9 @@ def main():
     run_parser.add_argument("--cwd", type=str, default=None, help="Working directory (default: current dir)")
     run_parser.add_argument("--worktree", action="store_true", help="Run in a separate git worktree if supported")
     run_parser.add_argument("--dry-run", action="store_true", help="Display planned execution command without running")
-    run_parser.add_argument("--async", dest="async_mode", action="store_true", help="Launch agent in background and return execution ID immediately")
-    run_parser.add_argument("--interactive", action="store_true", help="Launch in tmux session for 2-way interactive input and live user attachment")
+    run_parser.add_argument("--async", dest="async_mode", action="store_true", help="Launch agent in background and return execution ID immediately (non-interactive)")
+    run_parser.add_argument("--interactive", dest="interactive", action="store_true", default=None, help="Explicitly enable tmux interactive session (default: True if tmux installed)")
+    run_parser.add_argument("--no-interactive", dest="interactive", action="store_false", help="Disable tmux session and run as standard subprocess")
     run_parser.add_argument("--idle-timeout", type=int, default=120, help="Max allowed idle seconds with no new output before considering agent stalled (default: 120)")
     run_parser.add_argument("--checkin", dest="checkin_interval", type=int, default=0, help="Interval in seconds to yield a health check-in status report instead of hard termination")
 
