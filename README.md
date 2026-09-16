@@ -4,6 +4,14 @@ Personal storage repository for AI agent skills and automation tools.
 
 ---
 
+## Installation
+
+```bash
+npx skills add HaoNgo232/skills
+```
+
+---
+
 ### [agent-dispatcher](./agent-dispatcher/SKILL.md)
 Dispatches coding tasks to external AI coding agent CLIs (such as Cline CLI, OpenCode) with identity verification, anti-self-dispatch guards, and context window isolation.
 

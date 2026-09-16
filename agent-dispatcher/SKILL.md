@@ -31,6 +31,11 @@ When this skill is invoked:
   - If Main Agent is `cline` → Dispatch to `opencode` or `agy`.
   - If Main Agent is `opencode` → Dispatch to `cline` or `agy`.
 
+## Installation
+```bash
+npx skills add HaoNgo232/skills
+```
+
 ---
 
 ## Quick Command Execution
