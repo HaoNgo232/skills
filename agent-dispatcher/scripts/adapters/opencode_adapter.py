@@ -11,12 +11,12 @@ class OpenCodeAdapter(BaseAgentAdapter):
         if not self.binary_path:
             raise RuntimeError("OpenCode CLI binary not found on PATH.")
 
-        # In non-interactive mode, include --auto to prevent stalls
-        # In interactive mode, omit --auto so user/agent can reply to prompts
+        # In non-interactive mode, include --auto and --format json for automated JSON event streaming
+        # In interactive mode (inside tmux), omit --format json and --auto so the full visual TUI is active
         cmd = [self.binary_path, "run"]
         if not opts.interactive:
             cmd.append("--auto")
-        cmd.extend(["--format", "json"])
+            cmd.extend(["--format", "json"])
 
         if opts.model:
             cmd.extend(["-m", opts.model])

@@ -53,10 +53,12 @@ class TestAgentDispatcher(unittest.TestCase):
         self.assertIn("test-model", cmd_non_int)
         self.assertEqual(cmd_non_int[-1], "test prompt")
 
-        # Interactive mode omits --auto
+        # Interactive mode omits --auto and --format json
         opts_int = DispatchOptions(interactive=True)
         cmd_int = adapter.build_command("test prompt", opts_int)
         self.assertNotIn("--auto", cmd_int)
+        self.assertNotIn("--format", cmd_int)
+        self.assertNotIn("json", cmd_int)
 
     def test_command_building_agy(self):
         adapter = AgyAdapter()
