@@ -12,6 +12,9 @@ class DispatchOptions:
     worktree: bool = False
     dry_run: bool = False
     async_mode: bool = False
+    interactive: bool = False
+    idle_timeout: int = 120
+    checkin_interval: int = 0
 
 
 @dataclass
@@ -98,6 +101,30 @@ class BaseAgentAdapter(abc.ABC):
             return "Idle / Waiting for output"
         return lines[-1][:120]
 
+    def check_waiting_input(self, log_content: str) -> Optional[str]:
+        """Check if the agent is currently waiting for user input or approval. Returns prompt message if waiting."""
+        import re
+        ansi_regex = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+        clean_text = ansi_regex.sub('', log_content)
+        lines = [line.strip() for line in clean_text.splitlines() if line.strip()]
+        if not lines:
+            return None
+        last_line = lines[-1]
+        patterns = [
+            r'\[y/n\]',
+            r'\(y/n\)',
+            r'\[Y/n\]',
+            r'\[yes/no\]',
+            r'Do you want to proceed\?',
+            r'Allow execution\?',
+            r'Press ENTER to continue',
+            r'waiting for input'
+        ]
+        for pat in patterns:
+            if re.search(pat, last_line, re.IGNORECASE):
+                return last_line[:150]
+        return None
+
     def parse_summary_and_error(self, exit_code: int, log_content: str) -> Dict[str, Any]:
         """Default log parser: extracts the last relevant lines or error indicators."""
         lines = [line.strip() for line in log_content.splitlines() if line.strip()]
@@ -112,5 +139,10 @@ class BaseAgentAdapter(abc.ABC):
             "summary": "\n".join(last_lines[-3:]) if last_lines else "No output captured.",
             "error_hint": "\n".join(error_lines[-5:]) if error_lines else None
         }
+
+    def list_models(self) -> List[str]:
+        """List available models for this agent."""
+        return []
+
 
 

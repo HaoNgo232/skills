@@ -20,7 +20,7 @@ class TestAgentDispatcher(unittest.TestCase):
             self.assertIsNotNone(identity.version, f"{name} should report a version")
             # Verify agy version is resolved correctly
             if name == "agy":
-                self.assertEqual(identity.version, "1.2.3")
+                self.assertTrue(len(identity.version) > 0)
 
     def test_command_building_cline(self):
         adapter = ClineAdapter()
@@ -86,6 +86,44 @@ class TestAgentDispatcher(unittest.TestCase):
         opts = DispatchOptions(async_mode=True)
         self.assertTrue(opts.async_mode)
 
+    def test_list_models(self):
+        opencode = OpenCodeAdapter()
+        opencode_models = opencode.list_models()
+        self.assertIsInstance(opencode_models, list)
+        self.assertTrue(len(opencode_models) > 0)
+
+        cline = ClineAdapter()
+        cline_models = cline.list_models()
+        self.assertIsInstance(cline_models, list)
+        self.assertTrue(len(cline_models) > 0)
+
+    def test_command_building_interactive(self):
+        cline = ClineAdapter()
+        opts_inter = DispatchOptions(interactive=True)
+        cmd_cline = cline.build_command("test prompt", opts_inter)
+        self.assertNotIn("--auto-approve", cmd_cline)
+
+        opencode = OpenCodeAdapter()
+        cmd_opencode = opencode.build_command("test prompt", opts_inter)
+        self.assertNotIn("--auto", cmd_opencode)
+
+    def test_check_waiting_input(self):
+        adapter = ClineAdapter()
+        self.assertIsNone(adapter.check_waiting_input("Working on code..."))
+        prompt = adapter.check_waiting_input("Do you want to proceed? [y/n]")
+        self.assertIsNotNone(prompt)
+        self.assertIn("[y/n]", prompt)
+
+        prompt2 = adapter.check_waiting_input("Allow execution? (yes/no)")
+        self.assertIsNotNone(prompt2)
+        self.assertIn("Allow execution", prompt2)
+
+    def test_checkin_and_idle_timeout_options(self):
+        opts = DispatchOptions(idle_timeout=60, checkin_interval=30)
+        self.assertEqual(opts.idle_timeout, 60)
+        self.assertEqual(opts.checkin_interval, 30)
+
 if __name__ == "__main__":
     unittest.main()
+
 

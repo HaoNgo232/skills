@@ -9,6 +9,7 @@ import sys
 import time
 import uuid
 from pathlib import Path
+from typing import Optional, Tuple, List, Dict, Any
 
 # Add current directory to path so adapters package can be imported
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -23,6 +24,69 @@ def is_pid_alive(pid: int) -> bool:
         os.kill(pid, 0)
         return True
     except (OSError, ProcessLookupError):
+        return False
+
+def has_tmux() -> bool:
+    """Check if tmux binary exists on system."""
+    import shutil
+    return shutil.which("tmux") is not None
+
+def is_tmux_session_alive(session_name: str) -> bool:
+    """Check if a tmux session is active."""
+    if not has_tmux():
+        return False
+    try:
+        res = subprocess.run(
+            ["tmux", "has-session", "-t", session_name],
+            capture_output=True,
+            timeout=3
+        )
+        return res.returncode == 0
+    except Exception:
+        return False
+
+def get_tmux_session_pid(session_name: str) -> Optional[int]:
+    """Retrieve pane PID from tmux session."""
+    if not has_tmux():
+        return None
+    try:
+        res = subprocess.run(
+            ["tmux", "list-panes", "-t", session_name, "-F", "#{pane_pid}"],
+            capture_output=True,
+            text=True,
+            timeout=3
+        )
+        if res.returncode == 0 and res.stdout.strip():
+            return int(res.stdout.strip().splitlines()[0])
+    except Exception:
+        pass
+    return None
+
+def send_tmux_keys(session_name: str, text: str, enter: bool = True) -> bool:
+    """Send keystrokes to a running tmux session."""
+    if not has_tmux() or not is_tmux_session_alive(session_name):
+        return False
+    try:
+        cmd = ["tmux", "send-keys", "-t", session_name, text]
+        if enter:
+            cmd.append("C-m")
+        res = subprocess.run(cmd, capture_output=True, timeout=5)
+        return res.returncode == 0
+    except Exception:
+        return False
+
+def kill_tmux_session(session_name: str) -> bool:
+    """Kill a tmux session."""
+    if not has_tmux():
+        return False
+    try:
+        res = subprocess.run(
+            ["tmux", "kill-session", "-t", session_name],
+            capture_output=True,
+            timeout=3
+        )
+        return res.returncode == 0
+    except Exception:
         return False
 
 def finalize_run(task_dir: Path, execution_id: str, caller: str, identity, prompt: str, opts: DispatchOptions,
@@ -95,6 +159,12 @@ def cmd_verify(args):
     identity = adapter.verify_identity()
     print(json.dumps({"verified_identity": identity.to_dict()}, indent=2, ensure_ascii=False))
 
+def cmd_list_models(args):
+    adapter = get_adapter(args.agent)
+    models = adapter.list_models()
+    print(json.dumps({"agent": args.agent, "models": models}, indent=2, ensure_ascii=False))
+
+
 def cmd_status(args):
     execution_id = args.execution_id
     task_dir = RUN_LOG_DIR / execution_id
@@ -145,12 +215,21 @@ def cmd_status(args):
 
     pid = meta.get("pid")
     agent_name = meta.get("agent")
+    tmux_session = meta.get("tmux_session")
     start_time = meta.get("start_time", time.time())
     cwd = meta.get("cwd", os.getcwd())
     uptime = round(time.time() - start_time, 2)
 
     adapter = get_adapter(agent_name) if agent_name in REGISTRY else None
-    alive = is_pid_alive(pid) if pid else False
+
+    # Determine if process/session is alive
+    alive = False
+    if tmux_session:
+        alive = is_tmux_session_alive(tmux_session)
+        if alive and not pid:
+            pid = get_tmux_session_pid(tmux_session)
+    elif pid:
+        alive = is_pid_alive(pid)
 
     # Read log for activity
     log_content = ""
@@ -165,18 +244,25 @@ def cmd_status(args):
             pass
 
     activity = adapter.parse_activity(log_content) if adapter else "Processing..."
+    waiting_input = adapter.check_waiting_input(log_content) if adapter else None
 
     if alive:
+        status_str = "waiting_for_input" if waiting_input else "running"
         res = {
-            "status": "running",
+            "status": status_str,
             "execution_id": execution_id,
             "agent": agent_name,
             "pid": pid,
             "uptime_seconds": uptime,
             "last_activity_seconds_ago": last_modified_ago,
             "current_activity": activity,
+            "waiting_for_input": waiting_input,
             "raw_log": str(raw_log_path)
         }
+        if tmux_session:
+            res["tmux_session"] = tmux_session
+            res["attach_command"] = f"tmux attach -t {tmux_session}"
+            res["reply_command"] = f"python3 {os.path.abspath(__file__)} reply {execution_id} \"<answer>\""
         print(json.dumps(res, indent=2, ensure_ascii=False))
     else:
         # Process died or finished without manifest
@@ -231,22 +317,132 @@ def cmd_cancel(args):
         meta = json.load(f)
 
     pid = meta.get("pid")
+    tmux_session = meta.get("tmux_session")
+
+    killed = False
+    if tmux_session and is_tmux_session_alive(tmux_session):
+        kill_tmux_session(tmux_session)
+        killed = True
+
     if pid and is_pid_alive(pid):
         try:
             os.kill(pid, signal.SIGTERM)
             time.sleep(0.5)
             if is_pid_alive(pid):
                 os.kill(pid, signal.SIGKILL)
-            res = {"status": "cancelled", "execution_id": execution_id, "pid": pid, "message": f"Job {execution_id} cancelled."}
-            print(json.dumps(res, indent=2, ensure_ascii=False))
-            return
-        except Exception as e:
-            res = {"status": "error", "execution_id": execution_id, "message": f"Failed to kill process {pid}: {e}"}
-            print(json.dumps(res, indent=2, ensure_ascii=False))
-            sys.exit(1)
+            killed = True
+        except Exception:
+            pass
+
+    if killed:
+        res = {"status": "cancelled", "execution_id": execution_id, "message": f"Job {execution_id} cancelled."}
+        print(json.dumps(res, indent=2, ensure_ascii=False))
     else:
         res = {"status": "already_stopped", "execution_id": execution_id, "message": f"Job {execution_id} is not currently running."}
         print(json.dumps(res, indent=2, ensure_ascii=False))
+
+def cmd_reply(args):
+    """Send user/agent reply into the active session."""
+    execution_id = args.execution_id
+    message = args.message
+    task_dir = RUN_LOG_DIR / execution_id
+
+    if not task_dir.exists():
+        print(json.dumps({"status": "not_found", "execution_id": execution_id}, indent=2, ensure_ascii=False))
+        sys.exit(1)
+
+    meta_path = task_dir / "meta.json"
+    if not meta_path.exists():
+        print(json.dumps({"status": "error", "message": "Meta information missing."}, indent=2, ensure_ascii=False))
+        sys.exit(1)
+
+    with open(meta_path, "r", encoding="utf-8") as f:
+        meta = json.load(f)
+
+    tmux_session = meta.get("tmux_session")
+    if not tmux_session or not is_tmux_session_alive(tmux_session):
+        res = {
+            "status": "error",
+            "execution_id": execution_id,
+            "message": f"Session '{tmux_session or execution_id}' is not currently running or not an interactive session."
+        }
+        print(json.dumps(res, indent=2, ensure_ascii=False))
+        sys.exit(1)
+
+    success = send_tmux_keys(tmux_session, message, enter=True)
+    if success:
+        res = {
+            "status": "sent",
+            "execution_id": execution_id,
+            "tmux_session": tmux_session,
+            "message_sent": message
+        }
+        print(json.dumps(res, indent=2, ensure_ascii=False))
+    else:
+        res = {
+            "status": "error",
+            "execution_id": execution_id,
+            "message": f"Failed to send keys to tmux session {tmux_session}."
+        }
+        print(json.dumps(res, indent=2, ensure_ascii=False))
+        sys.exit(1)
+
+def cmd_watch(args):
+    """Live-watch output stream and status of a dispatched agent."""
+    execution_id = args.execution_id
+    task_dir = RUN_LOG_DIR / execution_id
+
+    if not task_dir.exists():
+        print(json.dumps({"status": "not_found", "execution_id": execution_id}, indent=2, ensure_ascii=False))
+        sys.exit(1)
+
+    raw_log_path = task_dir / "raw.log"
+    meta_path = task_dir / "meta.json"
+    manifest_path = task_dir / "audit_manifest.json"
+
+    meta = {}
+    if meta_path.exists():
+        try:
+            with open(meta_path, "r", encoding="utf-8") as f:
+                meta = json.load(f)
+        except Exception:
+            pass
+
+    tmux_session = meta.get("tmux_session")
+    print(f"=== Watching execution {execution_id} ===")
+    if tmux_session:
+        print(f"Direct terminal attach: tmux attach -t {tmux_session}")
+    print("Streaming log (Ctrl+C to stop watching)...\n")
+
+    # Read existing and tail
+    file_pos = 0
+    if raw_log_path.exists():
+        with open(raw_log_path, "r", encoding="utf-8", errors="replace") as f:
+            content = f.read()
+            sys.stdout.write(content)
+            sys.stdout.flush()
+            file_pos = f.tell()
+
+    try:
+        while True:
+            # Check if finalized
+            if manifest_path.exists():
+                print(f"\n=== Execution {execution_id} finalized ===")
+                break
+
+            # Read new log content
+            if raw_log_path.exists():
+                with open(raw_log_path, "r", encoding="utf-8", errors="replace") as f:
+                    f.seek(file_pos)
+                    new_chunk = f.read()
+                    if new_chunk:
+                        sys.stdout.write(new_chunk)
+                        sys.stdout.flush()
+                        file_pos = f.tell()
+
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        print("\nWatcher stopped.")
 
 def cmd_run(args):
     agent_name = args.agent
@@ -290,7 +486,10 @@ def cmd_run(args):
         cwd=cwd,
         worktree=args.worktree,
         dry_run=args.dry_run,
-        async_mode=getattr(args, "async_mode", False)
+        async_mode=getattr(args, "async_mode", False),
+        interactive=getattr(args, "interactive", False),
+        idle_timeout=getattr(args, "idle_timeout", 120),
+        checkin_interval=getattr(args, "checkin_interval", 0)
     )
 
     try:
@@ -328,6 +527,73 @@ def cmd_run(args):
     # Git state before execution
     git_before = get_git_status_files(cwd)
     start_time = time.time()
+
+    # If interactive mode requested, launch inside a detached tmux session with unbuffered pipe to raw.log
+    if opts.interactive:
+        if not has_tmux():
+            res = {
+                "status": "error",
+                "error_type": "TmuxNotInstalled",
+                "message": "tmux is not installed or not in PATH. Please install tmux to use interactive mode.",
+                "guidance": "Run 'sudo apt install tmux' (or package manager equivalent) or omit --interactive."
+            }
+            print(json.dumps(res, indent=2, ensure_ascii=False))
+            sys.exit(1)
+
+        tmux_session = execution_id
+        # Build command that pipes output to raw_log_path in real-time
+        # Use shlex.join to construct safe shell execution inside tmux
+        import shlex
+        escaped_cmd = " ".join(shlex.quote(c) for c in command)
+        tmux_shell_cmd = f"{escaped_cmd} 2>&1 | tee -a {shlex.quote(str(raw_log_path))}"
+
+        subprocess.run(
+            ["tmux", "new-session", "-d", "-s", tmux_session, "-c", cwd, f"bash -c {shlex.quote(tmux_shell_cmd)}"],
+            check=True
+        )
+
+        time.sleep(0.5)
+        pane_pid = get_tmux_session_pid(tmux_session)
+
+        meta = {
+            "execution_id": execution_id,
+            "pid": pane_pid,
+            "tmux_session": tmux_session,
+            "interactive": True,
+            "caller": caller,
+            "agent": agent_name,
+            "prompt": prompt,
+            "command": command,
+            "cwd": cwd,
+            "timeout": opts.timeout,
+            "model": opts.model,
+            "worktree": opts.worktree,
+            "start_time": start_time,
+            "git_before": list(git_before)
+        }
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=2, ensure_ascii=False)
+
+        interactive_res = {
+            "status": "launched_interactive",
+            "execution_id": execution_id,
+            "caller": caller or "unknown",
+            "agent": {
+                "name": identity.engine,
+                "version": identity.version,
+                "binary": identity.binary_path
+            },
+            "tmux_session": tmux_session,
+            "pane_pid": pane_pid,
+            "user_attach_command": f"tmux attach -t {tmux_session}",
+            "check_status_command": f"python3 {os.path.abspath(__file__)} status {execution_id}",
+            "reply_command": f"python3 {os.path.abspath(__file__)} reply {execution_id} \"<answer>\"",
+            "watch_command": f"python3 {os.path.abspath(__file__)} watch {execution_id}",
+            "cancel_command": f"python3 {os.path.abspath(__file__)} cancel {execution_id}",
+            "raw_log": str(raw_log_path)
+        }
+        print(json.dumps(interactive_res, indent=2, ensure_ascii=False))
+        return
 
     # If async requested, launch process in background and return immediately
     if opts.async_mode:
@@ -405,13 +671,73 @@ def cmd_run(args):
             with open(meta_path, "w", encoding="utf-8") as f:
                 json.dump(meta, f, indent=2, ensure_ascii=False)
 
-            try:
-                process.wait(timeout=opts.timeout if opts.timeout > 0 else None)
-                exit_code = process.returncode
-            except subprocess.TimeoutExpired:
-                process.kill()
-                timed_out = True
-                exit_code = 124
+            # Adaptive wait loop with Check-in and Idle Timeout
+            last_checkin_time = start_time
+            last_activity_time = start_time
+            last_log_size = 0
+
+            while True:
+                ret = process.poll()
+                if ret is not None:
+                    exit_code = ret
+                    break
+
+                now = time.time()
+                # Check log file size/mtime for activity
+                if raw_log_path.exists():
+                    try:
+                        current_size = raw_log_path.stat().st_size
+                        if current_size > last_log_size:
+                            last_log_size = current_size
+                            last_activity_time = now
+                    except Exception:
+                        pass
+
+                # 1. Idle timeout check: agent produced zero output for idle_timeout seconds
+                if opts.idle_timeout > 0 and (now - last_activity_time) > opts.idle_timeout:
+                    process.kill()
+                    timed_out = True
+                    exit_code = 124
+                    with open(raw_log_path, "a", encoding="utf-8") as lf:
+                        lf.write(f"\n[dispatcher] Terminated due to inactivity (idle > {opts.idle_timeout}s).\n")
+                    break
+
+                # 2. Check-in interval: trigger status report instead of kill
+                if opts.checkin_interval > 0 and (now - last_checkin_time) >= opts.checkin_interval:
+                    last_checkin_time = now
+                    # Read recent activity
+                    log_sample = ""
+                    try:
+                        with open(raw_log_path, "r", encoding="utf-8", errors="replace") as lf:
+                            log_sample = lf.read()
+                    except Exception:
+                        pass
+                    activity = adapter.parse_activity(log_sample)
+                    waiting_input = adapter.check_waiting_input(log_sample)
+
+                    # Explicit Wakeup Signal for Main Agent
+                    checkin_event = {
+                        "status": "wakeup_trigger",
+                        "execution_id": execution_id,
+                        "uptime_seconds": round(now - start_time, 1),
+                        "idle_seconds": round(now - last_activity_time, 1),
+                        "raw_log": str(raw_log_path),
+                        "action_required": "WAKEUP_MAIN_AGENT_TO_INSPECT_LOG",
+                        "quick_hint": activity,
+                        "message": f"Timeout checkpoint reached ({round(now - start_time, 1)}s). External agent is still running. Main agent: inspect raw.log directly to assess real progress."
+                    }
+                    print(json.dumps(checkin_event, ensure_ascii=False), flush=True)
+
+                # 3. Hard timeout check (only if checkin_interval == 0 and timeout > 0)
+                if opts.checkin_interval == 0 and opts.timeout > 0 and (now - start_time) > opts.timeout:
+                    process.kill()
+                    timed_out = True
+                    exit_code = 124
+                    with open(raw_log_path, "a", encoding="utf-8") as lf:
+                        lf.write(f"\n[dispatcher] Terminated due to hard timeout ({opts.timeout}s).\n")
+                    break
+
+                time.sleep(1.0)
     except Exception as e:
         exit_code = 1
         with open(raw_log_path, "a", encoding="utf-8") as log_file:
@@ -449,6 +775,11 @@ def main():
     verify_parser = subparsers.add_parser("verify", help="Verify the identity and version of a specific agent")
     verify_parser.add_argument("agent", choices=list(REGISTRY.keys()), help="Agent name to verify")
 
+    # list-models
+    models_parser = subparsers.add_parser("list-models", help="List available models for a specific agent")
+    models_parser.add_argument("agent", choices=list(REGISTRY.keys()), help="Agent name to query models for")
+
+
     # status
     status_parser = subparsers.add_parser("status", help="Check status, activity or result of a dispatched execution")
     status_parser.add_argument("execution_id", help="Execution ID returned from run")
@@ -456,6 +787,15 @@ def main():
     # cancel
     cancel_parser = subparsers.add_parser("cancel", help="Cancel a running execution")
     cancel_parser.add_argument("execution_id", help="Execution ID to cancel")
+
+    # reply
+    reply_parser = subparsers.add_parser("reply", help="Send input/reply to an active interactive session")
+    reply_parser.add_argument("execution_id", help="Execution ID to reply to")
+    reply_parser.add_argument("message", help="Message or option to send to the running agent")
+
+    # watch
+    watch_parser = subparsers.add_parser("watch", help="Live watch output stream and progress of an agent session")
+    watch_parser.add_argument("execution_id", help="Execution ID to watch")
 
     # run
     run_parser = subparsers.add_parser("run", help="Dispatch a task to a coding agent")
@@ -468,6 +808,9 @@ def main():
     run_parser.add_argument("--worktree", action="store_true", help="Run in a separate git worktree if supported")
     run_parser.add_argument("--dry-run", action="store_true", help="Display planned execution command without running")
     run_parser.add_argument("--async", dest="async_mode", action="store_true", help="Launch agent in background and return execution ID immediately")
+    run_parser.add_argument("--interactive", action="store_true", help="Launch in tmux session for 2-way interactive input and live user attachment")
+    run_parser.add_argument("--idle-timeout", type=int, default=120, help="Max allowed idle seconds with no new output before considering agent stalled (default: 120)")
+    run_parser.add_argument("--checkin", dest="checkin_interval", type=int, default=0, help="Interval in seconds to yield a health check-in status report instead of hard termination")
 
     args = parser.parse_args()
 
@@ -475,10 +818,16 @@ def main():
         cmd_list(args)
     elif args.subcommand == "verify":
         cmd_verify(args)
+    elif args.subcommand == "list-models":
+        cmd_list_models(args)
     elif args.subcommand == "status":
         cmd_status(args)
     elif args.subcommand == "cancel":
         cmd_cancel(args)
+    elif args.subcommand == "reply":
+        cmd_reply(args)
+    elif args.subcommand == "watch":
+        cmd_watch(args)
     elif args.subcommand == "run":
         cmd_run(args)
 

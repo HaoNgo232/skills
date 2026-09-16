@@ -10,7 +10,9 @@ class ClineAdapter(BaseAgentAdapter):
         if not self.binary_path:
             raise RuntimeError("Cline CLI binary not found on PATH.")
 
-        cmd = [self.binary_path, "--auto-approve", "true"]
+        cmd = [self.binary_path]
+        if not opts.interactive:
+            cmd.extend(["--auto-approve", "true"])
         
         if opts.timeout > 0:
             cmd.extend(["--timeout", str(opts.timeout)])
@@ -37,4 +39,47 @@ class ClineAdapter(BaseAgentAdapter):
                 return line[:120]
 
         return super().parse_activity(clean_text)
+
+    def list_models(self) -> List[str]:
+        """Fetch recommended free models from public API and configured provider models for Cline."""
+        import json
+        import urllib.request
+        from pathlib import Path
+
+        models = []
+
+        # 1. Official Public API from Cline: https://api.cline.bot/api/v1/ai/cline/recommended-models
+        try:
+            req = urllib.request.Request(
+                "https://api.cline.bot/api/v1/ai/cline/recommended-models",
+                headers={"User-Agent": "cline-dispatcher"}
+            )
+            with urllib.request.urlopen(req, timeout=3) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                for item in data.get("free", []):
+                    models.append(f"{item.get('name')} [id: {item.get('id')}] (free)")
+        except Exception:
+            pass
+
+
+        # 2. Fetch configured models from ~/.cline/data/settings/providers.json
+        settings_path = Path.home() / ".cline" / "data" / "settings" / "providers.json"
+        if settings_path.exists():
+            try:
+                with open(settings_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                providers = data.get("providers", {})
+                for prov_key, prov_data in providers.items():
+                    st = prov_data.get("settings", {})
+                    m = st.get("model")
+                    if m:
+                        formatted = f"{prov_key}:{m}"
+                        if formatted not in [x.split(" ")[0] for x in models]:
+                            models.append(formatted)
+            except Exception:
+                pass
+
+        return models
+
+
 

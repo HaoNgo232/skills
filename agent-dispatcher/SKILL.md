@@ -53,19 +53,43 @@ python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run <external_agent>
   ```bash
   python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run opencode "Review codebase" --caller agy --timeout 600 --async
   ```
-- **Check Status / Activity of Dispatched Agent**:
+- **Offload Interactively (2-way Interaction & User Attach)**:
+  ```bash
+  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run opencode "Tạo tính năng thanh toán" --caller agy --interactive
+  ```
+- **Check Status / Activity / Prompt of Dispatched Agent**:
   ```bash
   python3 .agents/skills/agent-dispatcher/scripts/dispatch.py status <execution_id>
+  ```
+- **Send Reply / Answer to Agent Prompt (2-Way)**:
+  ```bash
+  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py reply <execution_id> "y"
+  ```
+- **Live Stream / Watch Execution Output**:
+  ```bash
+  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py watch <execution_id>
+  ```
+- **User Direct Attach (Live TUI Monitor)**:
+  ```bash
+  tmux attach -t <execution_id>
   ```
 - **Cancel a Running Dispatched Agent**:
   ```bash
   python3 .agents/skills/agent-dispatcher/scripts/dispatch.py cancel <execution_id>
   ```
+- **List Available Models for Agent**:
+  ```bash
+  python3 .agents/skills/agent-dispatcher/scripts/dispatch.py list-models <external_agent>
+  ```
+
 
 ### Available Options:
 - `--caller <name>`: *(Required)* Calling agent identity (`agy`, `cline`, `opencode`). Blocks self-dispatch.
 - `--timeout <seconds>`: Max execution timeout in seconds (default: 120).
 - `--async`: Launch external agent asynchronously in the background and return immediately.
+- `--interactive`: Launch inside detached tmux session allowing 2-way input (`reply`) and user live attachment (`tmux attach`).
+- `--idle-timeout <seconds>`: Max allowed seconds with zero log activity before stopping (default: 120). Prevents killing actively working agents.
+- `--checkin <seconds>`: Periodic health check-in interval. Instead of killing on timer, outputs an activity check-in event so main agent can monitor progress.
 - `--model <model_id>`: Target model override.
 - `--worktree`: Run in isolated git worktree (Cline).
 - `--dry-run`: Preview command without running.

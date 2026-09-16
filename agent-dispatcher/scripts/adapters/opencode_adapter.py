@@ -11,9 +11,12 @@ class OpenCodeAdapter(BaseAgentAdapter):
         if not self.binary_path:
             raise RuntimeError("OpenCode CLI binary not found on PATH.")
 
-        # Always include --auto to prevent non-interactive permission stalls
-        # and --format json for structured stream output
-        cmd = [self.binary_path, "run", "--auto", "--format", "json"]
+        # In non-interactive mode, include --auto to prevent stalls
+        # In interactive mode, omit --auto so user/agent can reply to prompts
+        cmd = [self.binary_path, "run"]
+        if not opts.interactive:
+            cmd.append("--auto")
+        cmd.extend(["--format", "json"])
 
         if opts.model:
             cmd.extend(["-m", opts.model])
@@ -98,4 +101,23 @@ class OpenCodeAdapter(BaseAgentAdapter):
                 continue
 
         return super().parse_activity(log_content)
+
+    def list_models(self) -> List[str]:
+        """Fetch available models via opencode models command."""
+        if not self.binary_path:
+            return []
+        try:
+            import subprocess
+            res = subprocess.run(
+                [self.binary_path, "models"],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if res.returncode == 0:
+                return [line.strip() for line in res.stdout.splitlines() if line.strip()]
+        except Exception:
+            pass
+        return []
+
 
