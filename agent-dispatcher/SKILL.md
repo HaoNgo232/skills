@@ -65,14 +65,15 @@ python3 .agents/skills/agent-dispatcher/scripts/dispatch.py run <external_agent>
   ```bash
   python3 .agents/skills/agent-dispatcher/scripts/dispatch.py reply <execution_id> "y"
   ```
-- **Live Stream / Watch Execution Output**:
+- **Watch Live Progress (Terminal Stream)**:
   ```bash
   python3 .agents/skills/agent-dispatcher/scripts/dispatch.py watch <execution_id>
   ```
-- **User Direct Attach (Live TUI Monitor)**:
+- **Open Live Interactive TUI (Full Visual Monitor & Intervention)**:
   ```bash
   tmux attach -t <execution_id>
   ```
+  *(Tip: Press `Ctrl+b` then `d` to detach safely without stopping the agent)*
 - **Cancel a Running Dispatched Agent**:
   ```bash
   python3 .agents/skills/agent-dispatcher/scripts/dispatch.py cancel <execution_id>
