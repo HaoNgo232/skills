@@ -101,9 +101,13 @@ Khi nhận file video thô từ người dùng (ví dụ: `raw_video.mp4`), AI t
 
 | Nhu cầu thao tác | Lệnh thực thi |
 | :--- | :--- |
+| **Xem TOÀN BỘ trợ giúp & danh sách lệnh CLI** | `npx capcut-cli --help` (hoặc `capcut --help`) |
+| **Xem chi tiết tham số của 1 lệnh cụ thể** | `npx capcut-cli <command> --help` |
+| **Xuất toàn bộ schema/đặc tả lệnh dạng JSON cho AI** | `npx capcut-cli describe` |
 | **Xem tổng quan dự án** | `npx capcut-cli info <project> -H` |
 | **Liệt kê các track trong timeline** | `npx capcut-cli tracks <project> -H` |
 | **Xem danh sách hiệu ứng có sẵn** | `npx capcut-cli enums --transitions -H` hoặc `--scene-effects` |
 | **Chẩn đoán an toàn file dự án** | `npx capcut-cli diagnose <project> -H` |
 | **Xóa phông xanh (Chroma key)** | `npx capcut-cli chroma <project> <segment_id> --color "#00FF00"` |
 | **Tách nền thông minh (Smart matting)** | `npx capcut-cli matting <project> <segment_id>` |
+
