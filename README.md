@@ -27,6 +27,9 @@ Human-centered workflow design, interaction architecture, and usability audit.
 ### [fact-check](./fact-check/SKILL.md)
 Verifies claims, news, and statements against primary sources with a structured evidence workflow.
 
+### [capcut-ai-editor](./capcut-ai-editor/SKILL.md)
+Automates full video editing workflows for CapCut / JianYing: raw footage rough-cut, silence removal, retake detection, subtitles, zoom motion, sound design, and direct draft generation.
+
 ---
 
 ## License
