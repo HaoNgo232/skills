@@ -15,8 +15,8 @@ npx skills add HaoNgo232/skills
 ### [agent-dispatcher](./agent-dispatcher/SKILL.md)
 Dispatches coding tasks to external AI coding agent CLIs (such as Cline CLI, OpenCode) with identity verification, anti-self-dispatch guards, and context window isolation.
 
-### [orchestrator](./orchestrator/SKILL.md)
-Coordinates multi-agent workflows with task decomposition, tiered models, and supervision.
+### [task-orchestrator](./task-orchestrator/SKILL.md)
+Chế độ điều phối task thuần túy: chỉ giao tiếp với người dùng và điều phối subagent, không can thiệp code trực tiếp.
 
 ### [logging-codebase-auditor](./logging-codebase-auditor/SKILL.md)
 Audits logging quality, security, observability coverage, duplication, and volume across codebases.
